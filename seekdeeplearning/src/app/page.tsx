@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'; // Import useRouter from next/navig
    };
 
    const navigateToALEPage = () => {
-      router.push('/AlePage'); // Navigate to /ale page
+      router.push('/ale-page'); // Navigate to /ale page
    };
 
 
