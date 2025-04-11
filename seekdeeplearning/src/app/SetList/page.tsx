@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/SetList.css';
 
 // Define your topics with actual Date objects
 const topics = [
