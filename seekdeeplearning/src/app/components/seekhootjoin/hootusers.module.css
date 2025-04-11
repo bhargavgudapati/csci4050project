@@ -1,0 +1,16 @@
+
+.userlist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    background-color: lightgrey;
+    color: black;
+    
+}
+
+.user {
+    color: black;
+    background-color: lightblue;
+    text-align: center;
+}
