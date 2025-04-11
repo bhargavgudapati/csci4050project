@@ -1,6 +1,5 @@
 import React from 'react';
 import AnswerOption from './AnswerOption'; // Adjust path if needed
-import '../styles/QuestionCard.css'; // Corresponding styles
 
 // Props:
 // - question: The text of the question to display
@@ -16,12 +15,12 @@ interface QuestionCardProps {
 
 function QuestionCard({ question, answers, selectedAnswer, onAnswerSelect }: QuestionCardProps) {
   return (
-    <div className="question-card">
+    <div className="question-card rounded-lg bg-white p-4 shadow-md text-black h-[400px]">
       {/* Display the question */}
-      <h2 className="question-text">{question}</h2>
+      <h2 className="question-text text-center mt-4">{question}</h2>
 
       {/* Render the list of answer options */}
-      <div className="answers-container">
+      <div className="answers-container grid grid-cols-2 gap-4 mt-4 px-20 py-4">
            {answers.map((answer, index) => (
           <AnswerOption
           key={index} // Use a unique key for each answer (index is fine for static lists)
