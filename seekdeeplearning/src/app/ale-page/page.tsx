@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import QuestionCard from '../components/QuestionCard'; // Adjust path based on folder structure
-import Button from '../components/Button'; // Adjusted path based on folder structure
+import QuestionCard from '../components/ale-page/QuestionCard'; // Adjust path based on folder structure
+import Button from '../components/ale-page/Button'; // Adjusted path based on folder structure
 import questions from './questions'; // Local question data
 
 function ALEPage() {
