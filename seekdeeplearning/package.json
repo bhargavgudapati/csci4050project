@@ -2,8 +2,9 @@
   "name": "seekdeeplearning",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "node ./src/server/server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
