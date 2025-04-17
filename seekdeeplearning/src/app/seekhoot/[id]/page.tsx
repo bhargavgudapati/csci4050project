@@ -10,7 +10,8 @@ import HootUser from "@/app/components/seekhootjoin/hootusers";
 
 export default function seekhoot() {
     const [isConnected, setIsConnected] = useState<boolean>(false);
-    const [transport, setTransport] = useState<string>("N/A");    
+    const [transport, setTransport] = useState<string>("N/A");
+    const [counter, setCounter] = useState<number>(0);
     const router = useRouter();
     const params = useParams();
 
@@ -34,6 +35,9 @@ export default function seekhoot() {
 
 	socket.on("connect", onConnect);
 	socket.on("disconnect", onDisconnect);
+	socket.on("number", (input) => {
+	    setCounter(input);
+	});
 
 	return () => {
 	    socket.off("connect", onConnect);
@@ -41,6 +45,12 @@ export default function seekhoot() {
 	};
 	
     }, []);
+
+    const onClick = () => {
+	const x = counter + 1;
+	setCounter(x);
+	socket.emit("number", x);
+    }
     
     return (
 	<div>
@@ -49,6 +59,11 @@ export default function seekhoot() {
 	    <div>
 		<p>Status: {isConnected ? "connected" : "disconnected"}</p>
 		<p>Transport: {transport}</p>
+		
+	    </div>
+	    <button className="flex flex-row justify-between p-4 mt-4 rounded-lg shadow-lg space-x-8" onClick={onClick}>click</button>
+	    <div>
+		{counter}
 	    </div>
 	    <HootUser />
 	</div>

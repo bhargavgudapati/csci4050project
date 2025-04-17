@@ -19,7 +19,11 @@ app.prepare().then(() => {
 
     io.on("connection", (socket) => {
 	console.log("there is a conneciton");
-    })
+	socket.on("number", (input) => {
+	    socket.broadcast.emit("number", input);
+	    console.log("there is a number " + input);
+	});
+    });
  
     console.log(`> Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV}`);
 });
