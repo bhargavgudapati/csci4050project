@@ -18,7 +18,7 @@
   :root {
     /*--background: #0a0a0a;  removed this because you couldnt see anything on dark mode*/
     --background: #ededed;
-    --foreground: #ededed;
+    --foreground: black;
   }
 }
 
