@@ -4,7 +4,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 interface flashcardFields extends Document {
     term: string;
     definition: string;
-    groupID: string;
+    groupTitle: string;
 }
 
 const flashcardSchema = new Schema<flashcardFields>({
@@ -16,7 +16,7 @@ const flashcardSchema = new Schema<flashcardFields>({
 	type: String,
 	required: true
     },
-    groupID: {
+    groupTitle: {
 	type: String,
 	required: true
     }
@@ -24,4 +24,4 @@ const flashcardSchema = new Schema<flashcardFields>({
 });
 
 const Flashcard: Model<flashcardFields> = mongoose.models.Flashcard || mongoose.model<flashcardFields>("Flashcard", flashcardSchema);
-
+export default Flashcard;
