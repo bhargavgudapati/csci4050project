@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
 
         await connectMongoDB();
         await Flashcard.create({ term, definition, groupTitle, count });
-
         return NextResponse.json({ message: 'Flashcard added successfully' }, { status: 201 });
     } catch (error) {
         return NextResponse.json(
@@ -24,8 +23,3 @@ export async function POST(request: NextRequest) {
         );
     }
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> f26576c29fd6112bab45ca61c13433ca5bfa39f1
