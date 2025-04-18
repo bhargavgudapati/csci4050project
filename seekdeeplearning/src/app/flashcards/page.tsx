@@ -126,7 +126,7 @@ export default function FlashcardsPage() {
               <div className="flex justify-center">
                 <button
                   onClick={toggleEditMode}
-                  className="bg-[#D4DCFF] text-black px-4 py-2 rounded-full"
+                  className="bg-[#D4DCFF] text-[#859AD4] px-4 py-2 rounded-full"
                 >
                   {editing ? "Done" : "Edit"}
                 </button>
@@ -179,7 +179,6 @@ export default function FlashcardsPage() {
                       <FlashcardList term={card.term} definition={card.definition} />
                       {editing && (
                         <div className="absolute top-2 right-2 space-x-2">
-                          <button onClick={handleAddFlashcard} className="bg-[#D4DCFF] text-[#859AD4] rounded-full p-3">+</button>
                           <button onClick={() => handleDeleteFlashcard(i)} className="bg-[#D4DCFF] text-[#859AD4] rounded-full p-3">-</button>
                         </div>
                       )}

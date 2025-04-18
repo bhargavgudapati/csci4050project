@@ -12,10 +12,8 @@ export default function FlashcardsFirstPage() {
   return (
     <>
       <NavBar />
-      <main className="ml-16 p-6">
-        <div className="p-6 space-y-6">
-
-          {/* MODE SELECTION */}
+      <main className="ml-16 p-6 h-screen">
+        <div className="p-6 space-y-6 h-full">
           {!titleInputVisible && (
             <div className="text-center space-y-6">
               <h1 className="text-3xl font-semibold">What would you like to do?</h1>
@@ -36,10 +34,9 @@ export default function FlashcardsFirstPage() {
             </div>
           )}
 
-          {/* TITLE ENTRY */}
           {titleInputVisible && (
-            <div className="text-center space-y-4">
-              <h1 className="text-2xl">Name Your New Set</h1>
+            <div className="flex flex-col items-center justify-center h-full space-y-4">
+              <h1 className="text-4xl font-semibold text-center">Name Your New Set</h1>
               <input
                 type="text"
                 value={tempTitle}
@@ -48,7 +45,7 @@ export default function FlashcardsFirstPage() {
                     setTempTitle(e.target.value);
                   }
                 }}
-                className="p-2 border rounded w-full max-w-md"
+                className="p-2 border rounded w-full max-w-md text-center"
                 placeholder="Enter set title (max 50 characters)"
               />
               <button
@@ -58,7 +55,7 @@ export default function FlashcardsFirstPage() {
                     router.push(`/flashcards?topic=${encodeURIComponent(trimmed)}`);
                   }
                 }}
-                className="bg-[#D4DCFF] text-black px-4 py-2 rounded-full disabled:opacity-50"
+                className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff] disabled:opacity-50"
                 disabled={!tempTitle.trim()}
               >
                 Save Title

@@ -24,11 +24,6 @@ export default function SetList() {
     <NavBar />
     <main className="ml-16 p-6">
       <div className="p-6 space-y-6">
-        <div className="container">
-          <div className="sidebar">
-            <div className="avatar" />
-          </div>
-
           <div className="main">
             <div className="header">
               <h1 className="header-title">Your Topics</h1>
@@ -50,7 +45,6 @@ export default function SetList() {
               ))}
             </div>
           </div>
-        </div>
       </div>
     </main>
     </>
