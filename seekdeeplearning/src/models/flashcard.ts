@@ -5,6 +5,7 @@ interface flashcardFields extends Document {
     term: string;
     definition: string;
     groupTitle: string;
+    count: number;
 }
 
 const flashcardSchema = new Schema<flashcardFields>({
@@ -19,8 +20,11 @@ const flashcardSchema = new Schema<flashcardFields>({
     groupTitle: {
 	type: String,
 	required: true
+    },
+    count: {
+	type: Number,
+	required: true
     }
-    
 });
 
 const Flashcard: Model<flashcardFields> = mongoose.models.Flashcard || mongoose.model<flashcardFields>("Flashcard", flashcardSchema);
