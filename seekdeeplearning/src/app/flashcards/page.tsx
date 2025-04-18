@@ -24,6 +24,7 @@ export default function FlashcardsPage() {
   const [editing, setEditing] = useState(isNew); // auto-edit mode if creating
 
   const toggleEditMode = () => setEditing(!editing);
+  
   const handleAddFlashcard = async () => {
     if (newTerm && newDefinition && title) {
       const newCard = { term: newTerm, definition: newDefinition };
@@ -66,7 +67,30 @@ export default function FlashcardsPage() {
       router.push(`/flashcards?topic=${encodeURIComponent(title.trim())}`);
     }
   };
-  
+
+  const handleSave = async () => {
+    const userConfirmed = window.confirm("Are you sure you want to save? Any changes made cannot be undone.");
+    if (userConfirmed) {
+      try {
+        // Send data to the API to save the flashcard set
+        const response = await fetch('/api/saveFlashcards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, flashcards }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('Flashcards saved successfully!');
+        } else {
+          console.error('Failed to save:', data.message);
+        }
+      } catch (error) {
+        console.error('Error saving flashcards:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchFlashcards = async () => {
       if (title) {
@@ -82,10 +106,9 @@ export default function FlashcardsPage() {
         }
       }
     };
-  
+
     fetchFlashcards();
   }, [title]);
-  
 
   return (
     <>
@@ -93,31 +116,31 @@ export default function FlashcardsPage() {
       <main className="ml-16 p-6"> 
         <div className="p-6 space-y-6">
           {!title ? (
-          <div className="text-center space-y-4">
-            <h1 className="text-2xl">Name Your New Set</h1>
-            <input
-              type="text"
-              value={tempTitle} // use tempTitle here
-              onChange={(e) => {
-                if (e.target.value.length <= 50) {
-                  setTempTitle(e.target.value);
-                }
-              }}
-              className="p-2 border rounded w-full max-w-md"
-              placeholder="Enter set title (max 50 characters)"
-            />
-            <button
-              onClick={() => {
-                if (tempTitle.trim()) {
-                  setTitle(tempTitle.trim()); // set title only on submit
-                  router.push(`/flashcards?topic=${encodeURIComponent(tempTitle.trim())}`);
-                }
-              }}
-              className="bg-[#D4DCFF] text-black px-4 py-2 rounded-full disabled:opacity-50"
-              disabled={!tempTitle.trim()}
-            >
-              Save Title
-            </button>
+            <div className="text-center space-y-4">
+              <h1 className="text-2xl">Name Your New Set</h1>
+              <input
+                type="text"
+                value={tempTitle} // use tempTitle here
+                onChange={(e) => {
+                  if (e.target.value.length <= 50) {
+                    setTempTitle(e.target.value);
+                  }
+                }}
+                className="p-2 border rounded w-full max-w-md"
+                placeholder="Enter set title (max 50 characters)"
+              />
+              <button
+                onClick={() => {
+                  if (tempTitle.trim()) {
+                    setTitle(tempTitle.trim()); // set title only on submit
+                    router.push(`/flashcards?topic=${encodeURIComponent(tempTitle.trim())}`);
+                  }
+                }}
+                className="bg-[#D4DCFF] text-black px-4 py-2 rounded-full disabled:opacity-50"
+                disabled={!tempTitle.trim()}
+              >
+                Save Title
+              </button>
             </div>
           ) : (
             <>
@@ -129,6 +152,14 @@ export default function FlashcardsPage() {
                   className="bg-[#D4DCFF] text-[#859AD4] px-4 py-2 rounded-full"
                 >
                   {editing ? "Done" : "Edit"}
+                </button>
+
+                {/* Save Button */}
+                <button
+                  onClick={handleSave}
+                  className="bg-[#D4DCFF] text-[#859AD4] px-4 py-2 rounded-full ml-4"
+                >
+                  Save
                 </button>
               </div>
 
@@ -189,7 +220,7 @@ export default function FlashcardsPage() {
             </>
           )}
         </div>
-    </main>
+      </main>
     </>
   );
 }

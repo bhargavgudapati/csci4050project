@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './SetList.css';
 import NavBar from '../components/NavBar';
-import { Search } from 'lucide-react'; // Adjust based on your icon setup
+import { Search } from 'lucide-react';
 
-const topics = [
-  { title: "CSCI 4050", terms: 50, lastStudied: new Date(Date.now() - 1 * 86400000) },
-  { title: "CSCI 4720", terms: 20, lastStudied: new Date(Date.now() - 4 * 86400000) },
-  { title: "STAT 4210", terms: 106, lastStudied: new Date(Date.now() - 6 * 86400000) },
-  { title: "PEDB 1930", terms: 23, lastStudied: new Date(Date.now() - 28 * 86400000) },
-  { title: "FHCE 3200", terms: 47, lastStudied: new Date(Date.now() - 49 * 86400000) },
-];
+interface FlashcardSet {
+  _id: string;
+  groupTitle: string;
+  count: number;
+  retrieve: string;
+  createdAt?: string;
+}
 
 function formatLastStudied(date: Date): string {
   const now = new Date();
@@ -22,11 +22,47 @@ function formatLastStudied(date: Date): string {
 }
 
 export default function SetList() {
+  const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [titleInputVisible, setTitleInputVisible] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
 
-  const filteredTopics = topics.filter((topic) =>
-    topic.title.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    fetch('/api/flashcardSet')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.items) {
+          setFlashcardSets(data.items);
+        }
+      });
+  }, []);
+
+  const handleCreateSet = async () => {
+    if (!newTitle.trim()) return;
+
+    const newSet = {
+      count: 0,
+      groupTitle: newTitle,
+    };
+
+    const res = await fetch('/api/flashcardSet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newSet),
+    });
+
+    if (res.ok) {
+      const refreshed = await fetch('/api/flashcardSet').then((r) => r.json());
+      setFlashcardSets(refreshed.items);
+      setNewTitle('');
+      setTitleInputVisible(false);
+    }
+  };
+
+  const filteredSets = flashcardSets.filter((set) =>
+    set.groupTitle.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -35,10 +71,6 @@ export default function SetList() {
       <main className="ml-16 p-6">
         <div className="p-6 space-y-6">
           <div className="main">
-            <div className="header">
-            </div>
-
-            {/* Create New Flashcard Set Button */}
             <div className="flex items-center justify-between mb-6">
               <h1 className="header-title">Your Topics</h1>
               <button
@@ -49,35 +81,47 @@ export default function SetList() {
               </button>
             </div>
 
-
-            {/* Search Bar with Icon */}
             <div className="flex items-center justify-center mb-6 relative w-full max-w-md mx-auto">
               <div className="relative w-full">
                 <Search className="absolute left-3 top-2.5 text-gray-500 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search for flashcard sets..."
+                  placeholder="Search Topics..."
+                  className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
 
-            {/* Topic List */}
-            <div className="topic-list">
-              {filteredTopics.map((topic, index) => (
-                <a key={index} href={'/' + topic.title}>
-                  <div className="topic-card">
-                    <span className="topic-title">{topic.title}</span>
-                    <div className="topic-meta">
-                      <div>{topic.terms} Terms</div>
-                      <div className="topic-meta-italic">
-                        Last Studied: {formatLastStudied(topic.lastStudied)}
-                      </div>
-                    </div>
-                  </div>
-                </a>
+            {titleInputVisible && (
+              <div className="mb-6 flex items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Enter new set title"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="border px-4 py-2 rounded w-full"
+                />
+                <button
+                  onClick={handleCreateSet}
+                  className="bg-green-500 text-white px-4 py-2 rounded"
+                >
+                  Add
+                </button>
+              </div>
+            )}
+
+            <div className="grid gap-4">
+              {filteredSets.map((set) => (
+                <div key={set._id} className="p-4 border rounded-lg shadow bg-white">
+                  <h2 className="text-lg font-semibold">{set.groupTitle}</h2>
+                  <p className="text-sm text-gray-600">Terms: {set.count}</p>
+                  {/* You can add a "last studied" placeholder if needed */}
+                  <p className="text-xs text-gray-400 italic">
+                    Last Studied: {formatLastStudied(new Date(set._id.toString().slice(0, 8) + '000'))}
+                  </p>
+                </div>
               ))}
             </div>
           </div>
