@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { socket } from '@/socket';
+import MultipleChoiceSelector from '@/app/components/seekhoot/multiplechoice';
 
 export default function PlayerInGame() {
     const router = useRouter();
@@ -50,6 +51,7 @@ export default function PlayerInGame() {
     return (
 	<div>
 		 you are in {id}
+	    <MultipleChoiceSelector answerHook={setAnswer} />
 	</div>
     );
 }
