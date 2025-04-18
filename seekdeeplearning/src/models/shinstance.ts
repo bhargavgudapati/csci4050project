@@ -1,9 +1,10 @@
 
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
+//this model is for storing seekhoot sessions, each seekhoot room will have one SHinstance
 interface SHinstanceFields extends Document {
     groupID: string;
-    clientName: string;
+    roomNumber: number;
 }
 
 const SHinstanceSchema = new Schema<SHinstanceFields>({
@@ -11,8 +12,8 @@ const SHinstanceSchema = new Schema<SHinstanceFields>({
 	type: String,
 	required: true
     },
-    clientName: {
-	type: String,
+    roomNumber: {
+	type: Number,
 	required: true
     }
 });
