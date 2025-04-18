@@ -20,9 +20,24 @@ app.prepare().then(() => {
     io.on("connection", (socket) => {
 	console.log("there is a conneciton");
 	socket.on("number", (input) => {
-	    socket.broadcast.emit("number", input);
+	    const rooms = Array.from(socket.rooms);
+	    if (socket.lastRoom) {
+		socket.to(socket.lastRoom).emit("number", input);
+	    }
 	    console.log("there is a number " + input);
+	    console.log("broadcasted to " + rooms);
 	});
+	
+	socket.on("joinroom", (input) => {
+	    if (socket.lastRoom) {
+		socket.leave(socket.lastRoom);
+		socket.lastRoom = null;
+	    }
+	    socket.join(input);
+	    socket.lastRoom = input;
+	    console.log("changed room of " + socket.id + " to " + input);
+	});
+	
     });
  
     console.log(`> Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV}`);
