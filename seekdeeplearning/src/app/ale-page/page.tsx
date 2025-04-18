@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import QuestionCard from '../components/ale-page/QuestionCard'; // Adjust path based on folder structure
 import Button from '../components/ale-page/Button'; // Adjusted path based on folder structure
 import questions from './questions'; // Local question data
+import NavBar from '../components/NavBar';
 
 function ALEPage() {
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -24,31 +25,36 @@ function ALEPage() {
     };
 
     return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <div className="bg-white text-black mg-4 p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
-            <h1 className="font-bold">ALE Quiz</h1>
-            <div>
-                <QuestionCard
-                question={questions[currentQuestion].question}
-                answers={questions[currentQuestion].answers}
-                selectedAnswer={selectedAnswer}
-                onAnswerSelect={setSelectedAnswer}
-                />
-            </div>
-            <div className="flex flex-row justify-between p-4 mt-4 rounded-lg shadow-lg space-x-8">
-                <Button
-                label="Previous Question"
-                onClick={handlePreviousQuestion}
-                disabled={currentQuestion <= 0}
-                />
-                <Button
-                label="Next Question"
-                onClick={handleNextQuestion}
-                disabled={currentQuestion >= questions.length - 1}
-                />
+        <>
+        <NavBar />
+        <main className="ml-16 p-6"> 
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+            <div className="bg-white text-black mg-4 p-6 rounded-lg shadow-lg w-full max-w-md space-y-4">
+                <h1 className="font-bold">ALE Quiz</h1>
+                <div>
+                    <QuestionCard
+                    question={questions[currentQuestion].question}
+                    answers={questions[currentQuestion].answers}
+                    selectedAnswer={selectedAnswer}
+                    onAnswerSelect={setSelectedAnswer}
+                    />
+                </div>
+                <div className="flex flex-row justify-between p-4 mt-4 rounded-lg shadow-lg space-x-8">
+                    <Button
+                    label="Previous Question"
+                    onClick={handlePreviousQuestion}
+                    disabled={currentQuestion <= 0}
+                    />
+                    <Button
+                    label="Next Question"
+                    onClick={handleNextQuestion}
+                    disabled={currentQuestion >= questions.length - 1}
+                    />
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+    </>
     );
 }
 
