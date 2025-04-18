@@ -24,8 +24,3 @@ export async function POST(request: NextRequest) {
         );
     }
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> f26576c29fd6112bab45ca61c13433ca5bfa39f1
