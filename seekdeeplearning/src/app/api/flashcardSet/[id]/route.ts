@@ -12,6 +12,6 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     await connectMongoDB();
-    const item = await FlashcardSet.findOne({ groupID: id});
+    const item = await FlashcardSet.findOne({ groupTitle: id});
     return NextResponse.json({ item }, { status: 200 });
 }

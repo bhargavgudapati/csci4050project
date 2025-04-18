@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 interface flashcardsetFields extends Document {
     count: number;
-    groupID: string;
+    groupTitle: string;
     retrieve: string;
 }
 
@@ -12,7 +12,7 @@ const flashcardsetSchema = new Schema<flashcardsetFields>({
 	type: Number,
 	required: true
     },
-    groupID: {
+    groupTitle: {
 	type: String,
 	required: true
     },
@@ -24,6 +24,3 @@ const flashcardsetSchema = new Schema<flashcardsetFields>({
 
 const FlashcardSet: Model<flashcardsetFields> = mongoose.models.FlashcardSet || mongoose.model<flashcardsetFields>("FlashcardSet", flashcardsetSchema);
 export default FlashcardSet;
-
-
-
