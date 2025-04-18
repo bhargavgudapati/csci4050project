@@ -26,6 +26,6 @@ export async function PUT(request: NextRequest) {
 
 export async function GET() {
     await connectMongoDB();
-    const items = FlashcardSet.find({ retrieve: "all" });
+    const items = await FlashcardSet.find({ retrieve: "all" });
     return NextResponse.json({ items });
 }
