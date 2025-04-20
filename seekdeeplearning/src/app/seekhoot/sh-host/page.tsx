@@ -13,7 +13,7 @@ export default function seekhoot() {
     const [counter, setCounter] = useState<number>(0);
     const [newRoom, setNewRoom] = useState<string>("");
     const router = useRouter();
-
+    
     useEffect(() => {
 	const onConnect = () => {
 	    setIsConnected(true);
@@ -26,6 +26,30 @@ export default function seekhoot() {
 	const onDisconnect = () => {
 	    setIsConnected(false);
 	    setTransport("N/A");
+	}
+
+	const onShowPlayers = () => {
+	    
+	}
+
+	const onQuestionDisplay = () => {
+	    
+	}
+
+	const onAllowAnswers = () => {
+	    
+	}
+
+	const onShowAnswer = () => {
+	    
+	}
+
+	const onShowStatus = () => {
+	    
+	}
+
+	const onFinalResults = () => {
+	    
 	}
 	
 	if (socket.connected) {
@@ -53,23 +77,14 @@ export default function seekhoot() {
 
     const onChangeRoom = () => {
 	socket.emit("joinroom", newRoom);
+	router.push("sh-host/" + newRoom);
     }
     
     return (
 	<div>
 	    <Seekhootjoin qrcodeURL={"https://i.imgur.com/jYjaWdX.png"} />
-	    <h1>this is page</h1>
-	    <div>
-		<p>Status: {isConnected ? "connected" : "disconnected"}</p>
-		<p>Transport: {transport}</p>
-		
-	    </div>
-	    <button className="flex flex-row justify-between p-4 mt-4 rounded-lg shadow-lg space-x-8" onClick={onClick}>click</button>
-	    <input defaultValue="type room here" onChange={e => setNewRoom(e.target.value)}></input>
+	    <input placeholder="type room number here" onChange={e => setNewRoom(e.target.value)}></input>
 	    <button className="flex flex-row justify-between p-4 mt-4 rounded-lg shadow-lg space-x-8" onClick={onChangeRoom}>changeroom</button>
-	    <div>
-		{counter}
-	    </div>
 	    <HootUser />
 	</div>
     );
