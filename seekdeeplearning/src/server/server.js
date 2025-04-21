@@ -37,8 +37,19 @@ app.prepare().then(() => {
 	    socket.lastRoom = input;
 	    console.log("changed room of " + socket.id + " to " + input);
 	});
+	socket.on("newplayer", (input) => {
+	    const x = io.sockets.adapter.rooms.get(socket.lastRoom).size;
+	    socket.to(socket.lastRoom).emit("playercountupdate", x);
+	});
+
+	socket.on("disconnect", (input) => {
+	    const x = io.sockets.adapter.rooms.get(socket.lastRoom).size;
+	    socket.to(socket.lastRoom).emit("playercountupdate", x);
+	});
 	
     });
+
+    
  
     console.log(`> Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV}`);
 });

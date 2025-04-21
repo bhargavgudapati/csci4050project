@@ -27,30 +27,6 @@ export default function seekhoot() {
 	    setIsConnected(false);
 	    setTransport("N/A");
 	}
-
-	const onShowPlayers = () => {
-	    
-	}
-
-	const onQuestionDisplay = () => {
-	    
-	}
-
-	const onAllowAnswers = () => {
-	    
-	}
-
-	const onShowAnswer = () => {
-	    
-	}
-
-	const onShowStatus = () => {
-	    
-	}
-
-	const onFinalResults = () => {
-	    
-	}
 	
 	if (socket.connected) {
 	    onConnect();

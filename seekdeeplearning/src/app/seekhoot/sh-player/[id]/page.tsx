@@ -15,6 +15,7 @@ export default function PlayerInGame() {
     const [answer, setAnswer] = useState<string>("");
     const [onQuestion, setOnQuestion] = useState<boolean>(false); //potentially remove
     const [playerState, setPlayerState] = useState<string>(""); // start, readques, answerques, waitforresult, getresult, getfinalrank
+    const [sentNewPlayerRequest, setSentNewPlayerRequest] = useState<boolean>(false);
     
     useEffect(() => {
 	const onConnect = () => {
@@ -61,6 +62,11 @@ export default function PlayerInGame() {
 	socket.on("connect", onConnect);
 	socket.on("disconnect", onDisconnect);
 	socket.emit("joinroom", id);
+
+	if (!sentNewPlayerRequest) {
+	    socket.emit("newplayer", "7");
+	    setSentNewPlayerRequest(true);
+	}
 	
 	socket.on("startgame", onStartgame);
 	socket.on("readquestion", onReadQuestion);
