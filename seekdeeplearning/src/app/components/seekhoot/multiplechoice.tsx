@@ -4,11 +4,11 @@
 import styles from './multiplechoice.module.css';
 
 interface params {
-    answerHook: (arg0: string) => void
+    answerHook: (arg0: string) => void,
     setStateHook: (arg0: string) => void
 }
 
-const MultipleChoiceSelector: React.FC<params> = ({ answerHook, setStateHook}) => {
+const MultipleChoiceSelector: React.FC<params> = ({ answerHook, setStateHook }) => {
 
     const setPlayerState = () => {
 	setStateHook("waitforresult");

@@ -12,7 +12,7 @@ interface playerAndAnswer {
     answer: string | null
 }
 
-export default function PlayerInGame() {
+export default function page() {
     const router = useRouter();
     const { id } = useParams();
 
@@ -20,11 +20,12 @@ export default function PlayerInGame() {
     const [transport, setTransport] = useState<string>("N/A");
     const [name, setName] = useState<string>("");
     const [answer, setAnswer] = useState<string>("");
-    const [onQuestion, setOnQuestion] = useState<boolean>(false); //potentially remove
-    const [playerState, setPlayerState] = useState<string>(""); // start, readques, answerques, waitforresult, getresult, getfinalrank
+    const [playerState, setPlayerState] = useState<string>("entername"); // start, readques, answerques, waitforresult, getresult, getfinalrank + entername;
     const [sentNewPlayerRequest, setSentNewPlayerRequest] = useState<boolean>(false);
     const [result, setResult] = useState<boolean>(); //false is incorrect, true is correct
     const [score, setScore] = useState<number>();
+    const [joinedgame, setJoinedgame] = useState<boolean>(false);
+    const [isinroom, setIsinroom] = useState<boolean>(false);
     
     useEffect(() => {
 	const onConnect = () => {
@@ -46,16 +47,10 @@ export default function PlayerInGame() {
 
 	socket.on("connect", onConnect);
 	socket.on("disconnect", onDisconnect);
-	
-	socket.emit("joinroom", id);
-	if (!sentNewPlayerRequest) {
-	    const x: playerAndAnswer = {
-		playerName: name,
-		playerID: socket.io.engine.id,
-		answer: null
-	    };
-	    socket.emit("newplayer", x);
-	    setSentNewPlayerRequest(true);
+
+	if (!isinroom) {
+	    socket.emit("joinroom", id);
+	    setIsinroom(true);
 	}
 
 	socket.on("getresult", (input: number) => {
@@ -77,7 +72,7 @@ export default function PlayerInGame() {
 	socket.on("answerques", () => {
 	    console.log("can answer question now");
 	    setPlayerState("answerques");
-	})
+	});
 	
     }, []);
 
@@ -91,7 +86,42 @@ export default function PlayerInGame() {
     }
     
     // start, readques, answerques, waitforresult, getresult, getfinalrank
-    if (playerState == "start") {
+    if (playerState == "entername") {
+	if (isinroom) {
+	    const onclick = () => {
+		const x: playerAndAnswer = {
+		    playerName: name,
+		    playerID: socket.io.engine.id,
+		    answer: null
+		};
+		socket.emit("newplayer", x);
+		setSentNewPlayerRequest(true);
+		setPlayerState("start");
+
+		socket.on("echo", () => {
+		    const x: playerAndAnswer = {
+			playerID: socket.io.engine.id,
+			playerName: name,
+			answer: null
+		    }
+		    console.log("echoing back");
+		    socket.emit("echoback", x);
+		});
+	    }
+	    return (
+		<div>
+		    <input onChange={e => setName(e.target.value)} placeholder="enter name here"></input>
+		    <button onClick={onclick}>confirm name</button>
+		</div>
+	    );
+	} else {
+	    return (
+		<div>
+		    <span>joining room</span>
+		</div>
+	    );
+	}
+    } else if (playerState == "start") {
 	return (
 	    <div>
 		<span>you are in the game</span>

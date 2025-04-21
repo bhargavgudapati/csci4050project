@@ -1,6 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from '@/app/components/seekhoot/hostbody.module.css';
+import { socket } from "@/socket";
+
+interface playerAndAnswer {
+    playerName: string,
+    playerID: string,
+    answer: string | null
+}
 
 interface seekhootquestion {
     question: string,
@@ -14,14 +21,17 @@ interface params {
     elements: seekhootquestion[],
     setState: (arg0: string) => void,
     state: string,
-    gotElements: boolean
+    joinedroom: boolean
 }
 
-const HostBody: React.FC<params> = ({ elements, setState, state, gotElements }) => {
+const HostBody: React.FC<params> = ({ elements, setState, state, joinedroom }) => {
+    const [poppedElement, setPoppedElement] = useState<boolean>(false);
+    
     //showplayers, showquestion, allowanswers, showanswer, showrank, showfinalrank
     if (state == "showplayers") {
 	const onclick = () => {
-	    setState("showquestion")
+	    setState("showquestion");
+	    setPoppedElement(false);
 	}
 	return (
 	    <div>
@@ -59,25 +69,35 @@ const HostBody: React.FC<params> = ({ elements, setState, state, gotElements }) 
 	    </div>
 	);
     } else if (state == "showanswer") {
-	let currentquestion: seekhootquestion = elements.at(-1);
+	let currentquestion: seekhootquestion | null = elements.at(-1) || null;
 
+	if (currentquestion == null) {
+	    setState("showfinalrank");
+	}
 	const onclick = () => {
-	    setState("showscore");
+	    setState("showrank");
 	}
 
 	return (
 	    <div>
-		<span>the answer was {currentquestion.correctAnswer}</span>
+		<span>the answer was {currentquestion?.correctAnswer}</span>
 		<button onClick={onclick}>show the scores</button>
 	    </div>
 	);
-    } else if (state == "showscore") {
-	elements.pop();
+    } else if (state == "showrank") {
+	if (!poppedElement) {
+	    elements.pop();
+	    setPoppedElement(true);
+	}
 
 	const onclick = () => {
-	    setState("showquestion");
+	    if (elements.length > 0) {
+		setState("showquestion");
+		setPoppedElement(false);
+	    } else {
+		setState("getfinalrank");
+	    }
 	}
-	
 	return (
 	    <div>
 		<span>here are the scores</span>

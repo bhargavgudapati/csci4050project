@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { socket } from '@/socket';
 import HostBody from '@/app/components/seekhoot/hostbody';
+import HootUsers from '@/app/components/seekhoot/hootusers';
 
 interface question {
     ques: string,
@@ -75,12 +76,12 @@ export default function page() {
 
     const [isConnected, setIsConnected] = useState<boolean>(false);
     const [transport, setTransport] = useState<string>("N/A");
-    const [quizState, setQuizState] = useState<string>("showplayers"); //showplayers, showquestion, allowanswers, showanswer, showscore, showrank
+    const [quizState, setQuizState] = useState<string>("showplayers"); //showplayers, showquestion, allowanswers, showanswer, showrank, showfinalrank
     const [elements, setElements] = useState<seekhootquestion[]>([]);
-    const [onElement, setOnElement] = useState<number>(1);
     const [gotElements, setGotElements] = useState<boolean>(false);
     const [playercount, setPlayercount] = useState<number>(0);
     const [playersAndAnswers, setPlayerAnswer] = useState<playerAndAnswer[]>([]);
+    const [joinedroom, setJoinedroom] = useState<boolean>(false);
     
     useEffect(() => {
 	const onConnect = () => {
@@ -108,7 +109,6 @@ export default function page() {
 		} else {
 		    return retrievedelements.answers[x];
 		}
-		return "";
 	    }
 
 	    let seekquestions: seekhootquestion[] = retrievedelements.questionsWithAnswers?.map((x) => {
@@ -121,46 +121,63 @@ export default function page() {
 		}
 	    }) || [];
 	    setElements(seekquestions);
-	    setGotElements(true);
 	    console.log(seekquestions);
+	    setGotElements(true);
 	}
 	fetchData();
 
 	socket.on("connect", onConnect);
 	socket.on("disconnect", onDisconnect);
-	socket.emit("joinroom", id);
+	if (!joinedroom) {
+	    socket.emit("joinroom", id);
+	    setJoinedroom(true);
+	}
 	
 	socket.on("playercountupdate", (input) => {
-	    console.log("updating count");
+	    console.log("updating count to " + input);
 	    setPlayercount(Number(input));
 	});
 
-	socket.on("newPlayer", (input: playerAndAnswer) => {
-	    let x = playersAndAnswers;
-	    playersAndAnswers.push({
-		playerName: input.playerName,
-		playerID: input.playerID,
-		answer: null
+	socket.on("newplayer", (input: playerAndAnswer) => {
+	    setPlayerAnswer((prevanswer) => {
+		return [...prevanswer, {
+		    playerName: input.playerName,
+		    playerID: input.playerID,
+		    answer: null
+		}];
 	    });
-	    setPlayerAnswer(x);
+	    console.log("added player " + input.playerName);
+	    console.log("all players:" + input.playerName);
 	});
 
 	socket.on("playeranswer", (input: playerAndAnswer) => {
 	    console.log("setting player answer");
-	    let x = playersAndAnswers;
-	    playersAndAnswers.forEach((x) => {
-		if (x.playerID == input.playerID) {
-		    x.answer = input.answer;
-		}
+	    setPlayerAnswer((prev) => {
+		return prev.map((x) => {
+		    if (x.playerID == input.playerID) {
+			x.answer = input.answer;
+		    }
+		    return x;
+		});
 	    });
-	    setPlayerAnswer(x);
+	});
+
+	socket.on("echoback", (input) => {
+	    console.log(input);
 	});
     }, []);
-    
-    return (
-	<div>
-	    <span>you are on page {id}</span>
-	    <span>the player count is {playercount}</span>
-	</div>
-    );
+
+    if (gotElements) {
+	return (
+	    <div>
+		<HostBody elements={elements} setState={setQuizState} state={quizState} joinedroom={joinedroom} />
+		<HootUsers players={playersAndAnswers} />
+	    </div>
+	);
+    } else {
+	return (
+	    <div>
+	    </div>
+	);
+    }
 }

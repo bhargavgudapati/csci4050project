@@ -42,13 +42,19 @@ app.prepare().then(() => {
 	    const x = io.of("/").adapter.rooms.get(socket.lastRoom)?.size || 0;
 	    console.log("the length is " + x);
 	    socket.to(socket.lastRoom).emit("playercountupdate", x - 1);
+	    socket.to(socket.lastRoom).emit("newplayer", input);
 	});
 
 	socket.on("disconnect", (input) => {
 	    const x = io.sockets.adapter.rooms.get(socket.lastRoom).size;
 	    socket.to(socket.lastRoom).emit("playercountupdate", x - 1);
+	    socket.to(socket.lastRoom).emit("echo", "");
 	});
-	
+
+	socket.on("echoback", (input) => {
+	    socket.to(socket.lastRoom).emit("echoback", input);
+	    console.log("echoing back" + input);
+	});
     });
 
     
