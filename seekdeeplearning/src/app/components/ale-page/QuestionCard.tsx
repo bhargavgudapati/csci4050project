@@ -15,18 +15,18 @@ interface QuestionCardProps {
 
 function QuestionCard({ question, answers, selectedAnswer, onAnswerSelect }: QuestionCardProps) {
   return (
-    <div className="question-card rounded-lg bg-white p-4 shadow-md text-black h-[400px]">
+    <div className="rounded-lg bg-white p-6 shadow-lg text-black w-full max-w-2xl">
       {/* Display the question */}
-      <h2 className="question-text text-center mt-4">{question}</h2>
+      <h2 className="text-2xl font-semibold text-center mb-6">{question}</h2>
 
       {/* Render the list of answer options */}
-      <div className="answers-container grid grid-cols-2 gap-4 mt-4 px-20 py-4">
-           {answers.map((answer, index) => (
+      <div className="grid grid-cols-2 gap-4">
+        {answers.map((answer, index) => (
           <AnswerOption
-          key={index} // Use a unique key for each answer (index is fine for static lists)
-          text={answer} // The answer text to display
-          isSelected={selectedAnswer === answer} // Highlight if this is the selected answer
-          onSelect={() => onAnswerSelect(answer)} // Call the parent's selection handler
+            key={index} // Use a unique key for each answer (index is fine for static lists)
+            text={answer} // The answer text to display
+            isSelected={selectedAnswer === answer} // Highlight if this is the selected answer
+            onSelect={() => onAnswerSelect(answer)} // Call the parent's selection handler
           />
         ))}
       </div>

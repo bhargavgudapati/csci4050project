@@ -9,7 +9,11 @@ interface AnswerOptionProps {
 function AnswerOption({ text, isSelected, onSelect }: AnswerOptionProps) {
   return (
     <div
-      className={`bg-[#F5F5F5] hover:bg-gray-200 rounded-md text-center  answer-option ${isSelected ? 'selected' : ''}`}
+      className={`cursor-pointer px-4 py-3 rounded-lg text-center font-medium shadow-md transition-all duration-200 ${
+        isSelected
+          ? 'bg-[#D4DCFF] text-black'
+          : 'bg-[#E0E4F5] text-black hover:bg-[#d0d6e6]'
+      }`}
       onClick={onSelect}
     >
       {text}
