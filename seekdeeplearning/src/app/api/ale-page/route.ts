@@ -23,60 +23,50 @@ interface QuizResult {
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const setId = searchParams.get('setId');
-  const numQuestions = parseInt(searchParams.get('numQuestions') || '10');
+  const groupTitle = searchParams.get('setId'); // now contains the groupTitle
 
-  if (!setId) {
+  if (!groupTitle) {
     return NextResponse.json({ error: 'setId is required' }, { status: 400 });
   }
 
   try {
     await connectMongoDB();
-
-    // First, find the flashcard to get its groupTitle
-    const flashcard = await Flashcard.findById(setId);
-    if (!flashcard) {
-      return NextResponse.json({ error: 'Flashcard set not found' }, { status: 404 });
-    }
-
-    // Then find all flashcards with the same groupTitle
-    const flashcards = await Flashcard.find({ groupTitle: flashcard.groupTitle });
+    
+    // Find all flashcards with matching groupTitle
+    const flashcards = await Flashcard.find({ groupTitle });
     
     if (!flashcards || flashcards.length === 0) {
-      return NextResponse.json({ error: 'No flashcards found in set' }, { status: 404 });
+      return NextResponse.json({ error: 'No flashcards found' }, { status: 404 });
     }
 
-    // Transform flashcards into quiz questions
-    const questions = flashcards.map(card => {
-      // Get other cards to use as incorrect options
-      const otherCards = flashcards.filter(c => c._id.toString() !== card._id.toString());
-      const incorrectOptions = otherCards
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map(c => c.term);
+    // Transform into quiz questions
+    const questions = flashcards.map(card => ({
+      id: card._id.toString(),
+      definition: card.definition,
+      options: generateOptions(flashcards, card.term),
+      correctAnswer: card.term
+    }));
 
-      return {
-        id: card._id.toString(),
-        definition: card.definition,
-        options: [...incorrectOptions, card.term].sort(() => Math.random() - 0.5),
-        correctAnswer: card.term
-      };
-    });
-
-    // Shuffle and limit questions
-    const shuffledQuestions = questions
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.min(numQuestions, questions.length));
-
-    return NextResponse.json(shuffledQuestions);
-
+    // Shuffle questions
+    return NextResponse.json(questions.sort(() => Math.random() - 0.5));
   } catch (error) {
     console.error('Error:', error);
-    if (error instanceof mongoose.Error.CastError) {
-      return NextResponse.json({ error: 'Invalid setId format' }, { status: 400 });
-    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+}
+
+function generateOptions(flashcards: any[], correctTerm: string) {
+  const allTerms = flashcards.map(card => card.term);
+  const options = [correctTerm];
+  
+  while (options.length < 4 && options.length < allTerms.length) {
+    const randomTerm = allTerms[Math.floor(Math.random() * allTerms.length)];
+    if (!options.includes(randomTerm)) {
+      options.push(randomTerm);
+    }
+  }
+  
+  return options.sort(() => Math.random() - 0.5);
 }
 
 export async function POST(request: NextRequest) {
