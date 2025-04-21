@@ -159,8 +159,7 @@ export default function page() {
     
     return (
 	<div>
-	    <span>you are on page {id}</span>
-	    <span>the player count is {playercount}</span>
+	    <HostBody 
 	</div>
     );
 }
