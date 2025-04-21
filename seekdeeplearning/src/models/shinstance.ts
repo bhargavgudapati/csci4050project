@@ -3,12 +3,12 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 //this model is for storing seekhoot sessions, each seekhoot room will have one SHinstance
 interface SHinstanceFields extends Document {
-    groupID: string;
+    groupTitle: string;
     roomNumber: number;
 }
 
 const SHinstanceSchema = new Schema<SHinstanceFields>({
-    groupID: {
+    groupTitle: {
 	type: String,
 	required: true
     },

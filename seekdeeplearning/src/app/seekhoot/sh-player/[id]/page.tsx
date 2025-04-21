@@ -13,6 +13,9 @@ export default function PlayerInGame() {
     const [isConnected, setIsConnected] = useState<boolean>(false);
     const [transport, setTransport] = useState<string>("N/A");
     const [answer, setAnswer] = useState<string>("");
+    const [onQuestion, setOnQuestion] = useState<boolean>(false); //potentially remove
+    const [playerState, setPlayerState] = useState<string>(""); // start, readques, answerques, waitforresult, getresult, getfinalrank
+    const [sentNewPlayerRequest, setSentNewPlayerRequest] = useState<boolean>(false);
     
     useEffect(() => {
 	const onConnect = () => {
@@ -27,12 +30,28 @@ export default function PlayerInGame() {
 	    setIsConnected(false);
 	    setTransport("N/A");
 	}
-
+	
 	const onStartgame = () => {
 	    
 	}
 
+	const onReadQuestion = () => {
+	    
+	}
+
+	const onAnswerQuestion = () => {
+	    
+	}
+
 	const onSendAnswer = () => {
+	    
+	}
+
+	const onResult = () => {
+	    
+	}
+
+	const onEndGame = () => {
 	    
 	}
 	
@@ -43,14 +62,25 @@ export default function PlayerInGame() {
 	socket.on("connect", onConnect);
 	socket.on("disconnect", onDisconnect);
 	socket.emit("joinroom", id);
+
+	if (!sentNewPlayerRequest) {
+	    socket.emit("newplayer", "7");
+	    setSentNewPlayerRequest(true);
+	}
 	
 	socket.on("startgame", onStartgame);
+	socket.on("readquestion", onReadQuestion);
+	socket.on("answerquestion", onAnswerQuestion);
+	socket.on("sendanswer", onSendAnswer);
+	socket.on("questionresult", onResult);
+	socket.on("end", onEndGame);
+	
 	
     }, []);
     
     return (
 	<div>
-		 you are in {id}
+	    <h2>you are in {id}</h2>
 	    <MultipleChoiceSelector answerHook={setAnswer} />
 	</div>
     );
