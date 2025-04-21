@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/libs/mongodb';
-import FlashcardSet from '@/models/flashcardset';
+import { NextRequest, NextResponse } from "next/server";
+import connectMongoDB from "@/libs/mongodb";
+import Flashcard from "@/models/flashcard";
+import mongoose from "mongoose";
 
 interface QuizQuestion {
   id: string;
@@ -22,48 +23,50 @@ interface QuizResult {
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const setId = searchParams.get('setId');
-  const numQuestions = parseInt(searchParams.get('numQuestions') || '4');
+  const groupTitle = searchParams.get('setId'); // now contains the groupTitle
 
-  if (!setId) {
+  if (!groupTitle) {
     return NextResponse.json({ error: 'setId is required' }, { status: 400 });
   }
 
   try {
-    await connectToDatabase();
-    const flashcardSet = await FlashcardSet.findById(setId);
-    if (!flashcardSet) {
-      return NextResponse.json({ error: 'Flashcard set not found' }, { status: 404 });
+    await connectMongoDB();
+    
+    // Find all flashcards with matching groupTitle
+    const flashcards = await Flashcard.find({ groupTitle });
+    
+    if (!flashcards || flashcards.length === 0) {
+      return NextResponse.json({ error: 'No flashcards found' }, { status: 404 });
     }
 
-    const cards = flashcardSet.cards;
-    if (cards.length < numQuestions) {
-      return NextResponse.json({ error: 'Not enough cards in set' }, { status: 400 });
-    }
+    // Transform into quiz questions
+    const questions = flashcards.map(card => ({
+      id: card._id.toString(),
+      definition: card.definition,
+      options: generateOptions(flashcards, card.term),
+      correctAnswer: card.term
+    }));
 
-    // Randomly select cards
-    const selectedCards = cards.sort(() => Math.random() - 0.5).slice(0, numQuestions);
-    const questions: QuizQuestion[] = selectedCards.map((card: any) => {
-      // Select 3 random distractors
-      const distractors = cards
-        .filter((c: any) => c._id.toString() !== card._id.toString())
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map((c: any) => c.term);
-      const options = [...distractors, card.term].sort(() => Math.random() - 0.5);
-      return {
-        id: card._id.toString(),
-        definition: card.definition,
-        options,
-        correctAnswer: card.term,
-      };
-    });
-
-    return NextResponse.json(questions);
+    // Shuffle questions
+    return NextResponse.json(questions.sort(() => Math.random() - 0.5));
   } catch (error) {
-    console.error('Error fetching quiz questions:', error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+}
+
+function generateOptions(flashcards: any[], correctTerm: string) {
+  const allTerms = flashcards.map(card => card.term);
+  const options = [correctTerm];
+  
+  while (options.length < 4 && options.length < allTerms.length) {
+    const randomTerm = allTerms[Math.floor(Math.random() * allTerms.length)];
+    if (!options.includes(randomTerm)) {
+      options.push(randomTerm);
+    }
+  }
+  
+  return options.sort(() => Math.random() - 0.5);
 }
 
 export async function POST(request: NextRequest) {

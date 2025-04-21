@@ -1,16 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import './SetList.css';
 import NavBar from '../components/NavBar';
 import { Search } from 'lucide-react';
 
 interface FlashcardSet {
+  groupTitle: string;
+  count?: number;
+}
+
+interface GroupedFlashcards {
   _id: string;
   groupTitle: string;
   count: number;
-  retrieve: string;
-  createdAt?: string;
+  lastStudied: Date;
 }
 
 function formatLastStudied(date: Date): string {
@@ -22,6 +27,7 @@ function formatLastStudied(date: Date): string {
 }
 
 export default function SetList() {
+  const router = useRouter();
   const [flashcardSets, setFlashcardSets] = useState<FlashcardSet[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [titleInputVisible, setTitleInputVisible] = useState(false);
@@ -59,6 +65,10 @@ export default function SetList() {
       setNewTitle('');
       setTitleInputVisible(false);
     }
+  };
+
+  const handleTakeQuiz = (groupTitle: string) => {
+    router.push(`/ale-page?setId=${encodeURIComponent(groupTitle)}`);
   };
 
   const filteredSets = flashcardSets.filter((set) =>
@@ -114,13 +124,20 @@ export default function SetList() {
 
             <div className="grid gap-4">
               {filteredSets.map((set) => (
-                <div key={set._id} className="p-4 border rounded-lg shadow bg-white">
+                <div key={set.groupTitle} className="p-4 border rounded-lg shadow bg-white">
                   <h2 className="text-lg font-semibold">{set.groupTitle}</h2>
                   <p className="text-sm text-gray-600">Terms: {set.count}</p>
-                  {/* You can add a "last studied" placeholder if needed */}
                   <p className="text-xs text-gray-400 italic">
-                    Last Studied: {formatLastStudied(new Date(set._id.toString().slice(0, 8) + '000'))}
+                    Last Studied: {formatLastStudied(new Date(set.lastStudied))}
                   </p>
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={() => handleTakeQuiz(set.groupTitle)}
+                      className="bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
+                    >
+                      Take Quiz
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
