@@ -3,9 +3,12 @@ import React from 'react';
 import styles from './hootusers.module.css';
 
 interface playerAndAnswer {
-    playerID: string,
     playerName: string,
-    answer: string | null
+    playerID: string,
+    answer: string,
+    score: number,
+    answercorrect: boolean
+    gotresponse: boolean
 }
 
 interface params {
@@ -18,7 +21,7 @@ const HootUsers: React.FC<params> = ({ players }) => {
 	    {players.map((x, index) => {
 		return (
 		    <div key={index}>
-			<span>{x.playerName}</span>
+			<span>{x.playerName} {x.gotresponse ? "responded" : ""}</span>
 		    </div>
 		);
 	    })}

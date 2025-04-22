@@ -67,7 +67,10 @@ async function getElements(roomcode: string): Promise<quizElements> {
 interface playerAndAnswer {
     playerName: string,
     playerID: string,
-    answer: string | null
+    answer: string,
+    score: number,
+    answercorrect: boolean
+    gotresponse: boolean
 }
 
 export default function page() {
@@ -82,6 +85,7 @@ export default function page() {
     const [playercount, setPlayercount] = useState<number>(0);
     const [playersAndAnswers, setPlayerAnswer] = useState<playerAndAnswer[]>([]);
     const [joinedroom, setJoinedroom] = useState<boolean>(false);
+    const [currentcorrectanswer, setCurrentcorrectanswer] = useState<string>("");
     
     useEffect(() => {
 	const onConnect = () => {
@@ -143,19 +147,25 @@ export default function page() {
 		return [...prevanswer, {
 		    playerName: input.playerName,
 		    playerID: input.playerID,
-		    answer: null
+		    answer: "",
+		    score: 0,
+		    answercorrect: false,
+		    gotresponse: false
 		}];
 	    });
 	    console.log("added player " + input.playerName);
-	    console.log("all players:" + input.playerName);
+	    console.log("their id:" + input.playerID);
 	});
 
 	socket.on("playeranswer", (input: playerAndAnswer) => {
-	    console.log("setting player answer");
+	    console.log("setting player answer " + input.playerName + " " + input.answer);
 	    setPlayerAnswer((prev) => {
 		return prev.map((x) => {
 		    if (x.playerID == input.playerID) {
-			x.answer = input.answer;
+			console.log("found player");
+			x.answercorrect = input.answer == "a";
+			x.score = x.answercorrect ? (x.score + 20) : x.score;
+			x.gotresponse = true;
 		    }
 		    return x;
 		});
@@ -165,12 +175,40 @@ export default function page() {
 	socket.on("echoback", (input) => {
 	    console.log(input);
 	});
+
+	socket.on("removeplayer", (input) => {
+	    console.log(input);
+	    setPlayerAnswer((prev) => {
+		return prev.filter((x) => {
+		    return (x.playerID != input);
+		});
+	    });
+	});
+	
     }, []);
 
-    if (gotElements) {
+    const socketCommunicator = (label: string, data: any) => {
+	socket.emit(label, data);
+    }
+
+    const sendOffAnswersHandler = () => {
+	playersAndAnswers.forEach((x) => {
+	    console.log("sending to player " + x.playerName);
+	    socketCommunicator("sendresult", x);
+	})
+    }
+
+    const resetPlayerAnswers = () => {
+	playersAndAnswers.forEach((x) => {
+	    x.gotresponse = false;
+	})
+    }
+    
+    if (gotElements && joinedroom) {
 	return (
 	    <div>
-		<HostBody elements={elements} setState={setQuizState} state={quizState} joinedroom={joinedroom} />
+		<HostBody elements={elements} setState={setQuizState} state={quizState} resetPlayerAnswers={resetPlayerAnswers} sendResultsHandler={socketCommunicator}
+		    currentCorrectAnswer={setCurrentcorrectanswer} sendOffAnswers={sendOffAnswersHandler} /> 
 		<HootUsers players={playersAndAnswers} />
 	    </div>
 	);

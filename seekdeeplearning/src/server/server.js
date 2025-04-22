@@ -48,12 +48,29 @@ app.prepare().then(() => {
 	socket.on("disconnect", (input) => {
 	    const x = io.sockets.adapter.rooms.get(socket.lastRoom).size;
 	    socket.to(socket.lastRoom).emit("playercountupdate", x - 1);
+	    socket.to(socket.lastRoom).emit("removeplayer", socket.id);
 	    socket.to(socket.lastRoom).emit("echo", "");
 	});
 
 	socket.on("echoback", (input) => {
 	    socket.to(socket.lastRoom).emit("echoback", input);
 	    console.log("echoing back" + input);
+	});
+
+	socket.on("sendresult", (input) => {
+	    socket.to(socket.lastRoom).emit("getresult", input);
+	});
+
+	socket.on("playeranswer", (input) => {
+	    socket.to(socket.lastRoom).emit("playeranswer", input);
+	})
+
+	socket.on("readques", (input) => {
+	    socket.to(socket.lastRoom).emit("readques", "");
+	});
+
+	socket.on("answerques", (input) => {
+	    socket.to(socket.lastRoom).emit("answerques", );
 	});
     });
 

@@ -9,7 +9,9 @@ import MultipleChoiceSelector from '@/app/components/seekhoot/multiplechoice';
 interface playerAndAnswer {
     playerID: string,
     playerName: string,
-    answer: string | null
+    answer: string,
+    score: number,
+    answercorrect: boolean
 }
 
 export default function page() {
@@ -20,10 +22,11 @@ export default function page() {
     const [transport, setTransport] = useState<string>("N/A");
     const [name, setName] = useState<string>("");
     const [answer, setAnswer] = useState<string>("");
+    const [clearedanswer, setClearedanswer] = useState<boolean>(false);
     const [playerState, setPlayerState] = useState<string>("entername"); // start, readques, answerques, waitforresult, getresult, getfinalrank + entername;
     const [sentNewPlayerRequest, setSentNewPlayerRequest] = useState<boolean>(false);
-    const [result, setResult] = useState<boolean>(); //false is incorrect, true is correct
-    const [score, setScore] = useState<number>();
+    const [result, setResult] = useState<boolean>(false); //false is incorrect, true is correct
+    const [score, setScore] = useState<number>(0);
     const [joinedgame, setJoinedgame] = useState<boolean>(false);
     const [isinroom, setIsinroom] = useState<boolean>(false);
     
@@ -53,10 +56,13 @@ export default function page() {
 	    setIsinroom(true);
 	}
 
-	socket.on("getresult", (input: number) => {
-	    console.log("setting new score");
+	socket.on("getresult", (input: playerAndAnswer) => {
+	    if (input.playerID == socket.id) {
+		console.log("setting new score");
+		setResult(input.answercorrect);
+		setScore(input.score);
+	    }
 	    setPlayerState("getresult");
-	    setScore(input);
 	});
 
 	socket.on("getfinalrank", () => {
@@ -79,8 +85,10 @@ export default function page() {
     const onSendAnswer = (input: string) => {
 	const x: playerAndAnswer  = {
 	    playerName: name,
-	    playerID: socket.io.engine.id,
-	    answer: answer
+	    playerID: socket.id || "",
+	    answer: input,
+	    answercorrect: true,
+	    score: score
 	};
 	socket.emit("playeranswer", x);
     }
@@ -91,8 +99,10 @@ export default function page() {
 	    const onclick = () => {
 		const x: playerAndAnswer = {
 		    playerName: name,
-		    playerID: socket.io.engine.id,
-		    answer: null
+		    playerID: socket.id || "",
+		    answer: "",
+		    answercorrect: false,
+		    score: score
 		};
 		socket.emit("newplayer", x);
 		setSentNewPlayerRequest(true);
@@ -102,7 +112,9 @@ export default function page() {
 		    const x: playerAndAnswer = {
 			playerID: socket.io.engine.id,
 			playerName: name,
-			answer: null
+			answer: "",
+			answercorrect: false,
+			score: score
 		    }
 		    console.log("echoing back");
 		    socket.emit("echoback", x);
@@ -128,6 +140,9 @@ export default function page() {
 	    </div>
 	);
     } else if (playerState == "readques") {
+	if (clearedanswer) {
+	    setClearedanswer(false);
+	}
 	return (
 	    <div>
 		<span>read the question on the board</span>
@@ -146,10 +161,14 @@ export default function page() {
 	    </div>
 	);
     } else if (playerState == "getresult") {
+	if (!clearedanswer) {
+	    setAnswer("");
+	    setClearedanswer(true);
+	}
 	return (
 	    <div>
 		<span>your score is {score} </span>
-		<span>answered the question correctly: {result}</span>
+		<span>answered the question correctly: {result ? "true" : "false"}</span>
 	    </div>
 	);
     } else if (playerState == "getfinalrank") {
