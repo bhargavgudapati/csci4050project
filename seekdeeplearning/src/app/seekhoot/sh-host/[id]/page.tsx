@@ -73,7 +73,8 @@ interface playerAndAnswer {
     answer: string,
     score: number,
     answercorrect: boolean,
-    gotresponse: boolean
+    gotresponse: boolean,
+    setresponse: boolean
 }
 
 export default function page() {
@@ -146,18 +147,27 @@ export default function page() {
 	});
 
 	socket.on("newplayer", (input: playerAndAnswer) => {
-	    setPlayerAnswer((prevanswer) => {
-		return [...prevanswer, {
-		    playerName: input.playerName,
-		    playerID: input.playerID,
-		    answer: "",
-		    score: 0,
-		    answercorrect: false,
-		    gotresponse: false
-		}];
+	    let addplayer: boolean = true;
+	    playersAndAnswers.forEach((x) => {
+		if (input.playerID == x.playerID) {
+		    addplayer = false;
+		}
 	    });
-	    console.log("added player " + input.playerName);
-	    console.log("their id:" + input.playerID);
+	    if (addplayer) {
+		setPlayerAnswer((prevanswer) => {
+		    return [...prevanswer, {
+			playerName: input.playerName,
+			playerID: input.playerID,
+			answer: "",
+			score: 0,
+			answercorrect: false,
+			gotresponse: false,
+			setresponse: false
+		    }];
+		});
+		console.log("added player " + input.playerName);
+		console.log("their id:" + input.playerID);
+	    }
 	});
 
 	socket.on("echoback", (input) => {
@@ -186,6 +196,7 @@ export default function page() {
 			x.score = x.answercorrect ? (x.score + 20) : x.score;
 			x.gotresponse = true;
 		    }
+		    x.setresponse = true;
 		}
 		return x;
 	    });
@@ -201,12 +212,15 @@ export default function page() {
 	    console.log("sending to player " + x.playerName);
 	    socketCommunicator("sendresult", x);
 	    x.gotresponse = false;
+	    x.setresponse = false;
 	});
     }
 
     const resetPlayerAnswers = () => {
 	playersAndAnswers.forEach((x) => {
 	    x.gotresponse = false;
+	    x.setresponse = false;
+	    x.answer = "";
 	});
 	
 	const updateLetter = () => {
@@ -224,7 +238,7 @@ export default function page() {
 		<main className={"ml-16 p-6"}>
 		    <HostBody elements={elements} setPoint={setQuizState} state={quizState} resetPlayerAnswers={resetPlayerAnswers} sendResultsHandler={socketCommunicator}
 			sendOffAnswers={sendOffAnswersHandler} players={playersAndAnswers} rightLetter={currentcorrectanswer} roomcode={id?.toString() || ""}/>
-		    <HootUsers players={playersAndAnswers} roomcode={id.toString()}/>
+		    <HootUsers players={playersAndAnswers} roomcode={id?.toString() || ""}/>
 		</main>
 	    </div>
 	);

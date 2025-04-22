@@ -7,8 +7,9 @@ interface playerAndAnswer {
     playerID: string,
     answer: string,
     score: number,
-    answercorrect: boolean
-    gotresponse: boolean
+    answercorrect: boolean,
+    gotresponse: boolean,
+    setresponse: boolean
 }
 
 interface params {
@@ -24,7 +25,7 @@ const HootUsers: React.FC<params> = ({ players, roomcode }) => {
 	    <div className={styles.userlist}>
 		{players.map((x, index) => {
 		    return (
-			<div key={index} className={x.gotresponse ? styles.green : styles.clear}>
+			<div key={index} className={x.setresponse ? styles.green : styles.clear}>
 			    <span className={styles.user}>{x.playerName}</span>
 			</div>
 		    );
