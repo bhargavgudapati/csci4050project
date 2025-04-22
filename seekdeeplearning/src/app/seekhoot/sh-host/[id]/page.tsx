@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { socket } from '@/socket';
 import HostBody from '@/app/components/seekhoot/hostbody';
 import HootUsers from '@/app/components/seekhoot/hootusers';
+import NavBar from '@/app/components/NavBar';
 
 interface question {
     ques: string,
@@ -25,6 +26,8 @@ interface seekhootquestion {
     wronganswer2: string,
     wronganswer3: string
 }
+
+type letterchoices = ("a" | "b" | "c" | "d");
 
 async function getElements(roomcode: string): Promise<quizElements> {
     const response = await fetch("/api/shinstance/" + roomcode, {
@@ -85,7 +88,7 @@ export default function page() {
     const [playercount, setPlayercount] = useState<number>(0);
     const [playersAndAnswers, setPlayerAnswer] = useState<playerAndAnswer[]>([]);
     const [joinedroom, setJoinedroom] = useState<boolean>(false);
-    const [currentcorrectanswer, setCurrentcorrectanswer] = useState<string>("");
+    const [currentcorrectanswer, setCurrentcorrectanswer] = useState<"a" | "b" | "c" | "d">("a");
     
     useEffect(() => {
 	const onConnect = () => {
@@ -173,22 +176,21 @@ export default function page() {
     }, []);
 
     socket.on("playeranswer", (input: playerAndAnswer) => {
-	if (currentcorrectanswer != "") {
-	    console.log("setting player answer " + input.playerName + " " + input.answer);
-	    setPlayerAnswer((prev) => {
-		return prev.map((x) => {
-		    if (x.playerID == input.playerID && !x.gotresponse) {
-			console.log("found player, correct ans should be " + currentcorrectanswer + " the player answered " + input.answer);
-			x.answercorrect = (input.answer == currentcorrectanswer);
+	console.log("setting player answer " + input.playerName + " " + input.answer);
+	setPlayerAnswer((prev) => {
+	    return prev.map((x) => {
+		if (x.playerID == input.playerID) {
+		    console.log("found player, correct ans should be " + currentcorrectanswer + " the player answered " + input.answer);
+		    x.answercorrect = (input.answer == currentcorrectanswer);
+		    if (!x.gotresponse && x.answercorrect) {
 			x.score = x.answercorrect ? (x.score + 20) : x.score;
 			x.gotresponse = true;
 		    }
-		    return x;
-		});
+		}
+		return x;
 	    });
-	}
+	});
     });
-
 
     const socketCommunicator = (label: string, data: any) => {
 	socket.emit(label, data);
@@ -200,25 +202,30 @@ export default function page() {
 	    socketCommunicator("sendresult", x);
 	    x.gotresponse = false;
 	});
-	setCurrentcorrectanswer("");
     }
 
     const resetPlayerAnswers = () => {
 	playersAndAnswers.forEach((x) => {
 	    x.gotresponse = false;
-	})
-    }
-
-    const setRightLetter = (input: string) => {
-	setCurrentcorrectanswer(input);
+	});
+	
+	const updateLetter = () => {
+	    const letters:  letterchoices[] = ["a", "b", "c", "d"];
+	    const x = letters[Math.floor(Math.random() * letters.length)];
+	    setCurrentcorrectanswer(x);
+	}
+	updateLetter();
     }
     
     if (gotElements && joinedroom) {
 	return (
 	    <div>
-		<HostBody elements={elements} setState={setQuizState} state={quizState} resetPlayerAnswers={resetPlayerAnswers} sendResultsHandler={socketCommunicator}
-		    currentCorrectAnswer={setRightLetter} sendOffAnswers={sendOffAnswersHandler} players={playersAndAnswers} />
-		<HootUsers players={playersAndAnswers} />
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <HostBody elements={elements} setPoint={setQuizState} state={quizState} resetPlayerAnswers={resetPlayerAnswers} sendResultsHandler={socketCommunicator}
+			sendOffAnswers={sendOffAnswersHandler} players={playersAndAnswers} rightLetter={currentcorrectanswer} />
+		    <HootUsers players={playersAndAnswers} />
+		</main>
 	    </div>
 	);
     } else {

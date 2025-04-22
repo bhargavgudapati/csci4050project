@@ -21,7 +21,7 @@ interface answerAndLetter {
 const Answers: React.FC<params> = ({ correctAnswer, wronganswer1, wronganswer2, wronganswer3, rightLetter, highlightAnswer}) => {
     
     const wrongAnswers: string[] = [wronganswer1, wronganswer2, wronganswer3];
-
+    console.log("answers body got rightLetter to be " + rightLetter);
     if (rightLetter != null) {
 	const answersAndLetters: answerAndLetter[] = [
 	    {

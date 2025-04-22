@@ -36,18 +36,14 @@ const JoinRoom: React.FC<{}> = () => {
     }
     
     return (
-	<div className={styles.joinbox}>
-	    <div>
-		<h1 className={styles.prompt}>Enter your roomcode below to join a SeekHoot!</h1>
-	    </div>
-	    <div className={styles.entryWindow}>
-		<div>
+	<div>
+	    <h1 className={styles.prompt}><b>Enter a roomcode below to join a SeekHoot</b></h1>
+	    <div className={styles.wholeform}>
+		<div className={styles.joinbox}>
 		    <input className={styles.joininput} placeholder="enter room number" onChange={e => setRoomcode(e.target.value)} />
 		    <button className={styles.joinbutton} onClick={onClick}>enter room</button>
+		    <h2 className={errorColor + " " + styles.errorText}>{errorText}</h2>
 		</div>
-	    </div>
-	    <div>
-		<h2 className={errorColor + " " + styles.errorText}>{errorText}</h2>
 	    </div>
 	</div>
     );

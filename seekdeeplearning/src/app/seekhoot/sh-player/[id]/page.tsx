@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { socket } from '@/socket';
 import MultipleChoiceSelector from '@/app/components/seekhoot/multiplechoice';
+import NavBar from '@/app/components/NavBar';
+import NameEntry from '@/app/components/seekhoot/nameentry';
+import InGame from '@/app/components/seekhoot/ingame';
 
 interface playerAndAnswer {
     playerID: string,
@@ -126,21 +129,29 @@ export default function page() {
 	    }
 	    return (
 		<div>
-		    <input onChange={e => setName(e.target.value)} placeholder="enter name here"></input>
-		    <button onClick={onclick}>confirm name</button>
+		    <NavBar />
+		    <main className={"ml-16 p-6"}>
+			<NameEntry onSubmit={onclick} setName={setName} roomcode={id?.toString() || ""} />
+		    </main>
 		</div>
 	    );
 	} else {
 	    return (
 		<div>
-		    <span>joining room</span>
+		    <NavBar />
+		    <main className={"ml-16 p-6"}>
+			<span>joining room</span>
+		    </main>
 		</div>
 	    );
 	}
     } else if (playerState == "start") {
 	return (
 	    <div>
-		<span>you are in the game</span>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <InGame state={"waitforstart"}/>
+		</main>
 	    </div>
 	);
     } else if (playerState == "readques") {
@@ -152,19 +163,28 @@ export default function page() {
 	}
 	return (
 	    <div>
-		<span>read the question on the board</span>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <InGame state={"seeboard"} />
+		</main>
 	    </div>
 	)
     } else if (playerState == "answerques") {
 	return (
 	    <div>
-		<MultipleChoiceSelector answerHook={onSendAnswer} setStateHook={setPlayerState}/>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <MultipleChoiceSelector answerHook={onSendAnswer} setStateHook={setPlayerState}/>
+		</main>
 	    </div>
 	);
     } else if (playerState == "waitforresult") {
 	return (
 	    <div>
-		<span>wait for results</span>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <InGame state="waitforscore" />
+		</main>
 	    </div>
 	);
     } else if (playerState == "getresult") {
@@ -174,20 +194,28 @@ export default function page() {
 	}
 	return (
 	    <div>
-		<span>your score is {score} </span>
-		<span>answered the question correctly: {result ? "true" : "false"}</span>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <InGame state={"getscore"} score={score} correct={result} />
+		</main>
 	    </div>
 	);
     } else if (playerState == "getfinalrank") {
 	return (
 	    <div>
-		<span>your final score is {score}</span>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <span>your final score is {score}</span>
+		</main>
 	    </div>
 	);
     } else {
 	return (
 	    <div>
-		<span>loading...</span>
+		<NavBar />
+		<main className={"ml-16 p-6"}>
+		    <span>loading...</span>
+		</main>
 	    </div>
 	);
     }

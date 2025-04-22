@@ -23,17 +23,13 @@ const PlayerRankings: React.FC<params> = ({ players }) => {
 		<p className={styles.miniheader}>scores...</p>
 	    </div>
 	    <div className={styles.playersbox}>
-		<div></div>
-		{
-		    players.map((x, index) => {
+		{players.map((x, index) => {
 			return (
 			    <div className={styles.playerbox} key={index}>
 				<p className={styles.playertext}>{x.playerName}</p><p className={styles.playertext}>{x.score}</p>
 			    </div>
 			);
-		    })
-		}
-		<div></div>
+		    })}
 	    </div>
 	</div>
     );

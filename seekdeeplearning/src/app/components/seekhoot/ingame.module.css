@@ -1,0 +1,22 @@
+
+.wholeform {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text {
+    font-size: 1.5rem;
+    font-color: black;
+}
+
+.redback {
+    background-color: darkred;
+    border-radius: 1rem; 
+}
+
+.greenback {
+    background-color: darkgreen;
+    border-radius: 1rem; 
+}
+
