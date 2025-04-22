@@ -17,16 +17,19 @@ interface params {
 
 const HootUsers: React.FC<params> = ({ players }) => {
     return (
-	<div className={styles.userlist}>
-	    {players.map((x, index) => {
-		return (
-		    <div key={index}>
-			<span>{x.playerName} {x.gotresponse ? "responded" : ""}</span>
-		    </div>
-		);
-	    })}
+	<div className={styles.hootusers}>
+	    <p className={styles.miniheader}><b>current players...</b></p>
+	    <div className={styles.userlist}>
+		{players.map((x, index) => {
+		    return (
+			<div key={index} className={x.gotresponse ? styles.green : styles.clear}>
+			    <span className={styles.user}>{x.playerName}</span>
+			</div>
+		    );
+		})}
+	    </div>
 	</div>
-    )
+		  )
 }
 
 export default HootUsers;

@@ -69,7 +69,7 @@ interface playerAndAnswer {
     playerID: string,
     answer: string,
     score: number,
-    answercorrect: boolean
+    answercorrect: boolean,
     gotresponse: boolean
 }
 
@@ -157,21 +157,6 @@ export default function page() {
 	    console.log("their id:" + input.playerID);
 	});
 
-	socket.on("playeranswer", (input: playerAndAnswer) => {
-	    console.log("setting player answer " + input.playerName + " " + input.answer);
-	    setPlayerAnswer((prev) => {
-		return prev.map((x) => {
-		    if (x.playerID == input.playerID) {
-			console.log("found player");
-			x.answercorrect = input.answer == "a";
-			x.score = x.answercorrect ? (x.score + 20) : x.score;
-			x.gotresponse = true;
-		    }
-		    return x;
-		});
-	    });
-	});
-
 	socket.on("echoback", (input) => {
 	    console.log(input);
 	});
@@ -187,6 +172,24 @@ export default function page() {
 	
     }, []);
 
+    socket.on("playeranswer", (input: playerAndAnswer) => {
+	if (currentcorrectanswer != "") {
+	    console.log("setting player answer " + input.playerName + " " + input.answer);
+	    setPlayerAnswer((prev) => {
+		return prev.map((x) => {
+		    if (x.playerID == input.playerID && !x.gotresponse) {
+			console.log("found player, correct ans should be " + currentcorrectanswer + " the player answered " + input.answer);
+			x.answercorrect = (input.answer == currentcorrectanswer);
+			x.score = x.answercorrect ? (x.score + 20) : x.score;
+			x.gotresponse = true;
+		    }
+		    return x;
+		});
+	    });
+	}
+    });
+
+
     const socketCommunicator = (label: string, data: any) => {
 	socket.emit(label, data);
     }
@@ -195,7 +198,9 @@ export default function page() {
 	playersAndAnswers.forEach((x) => {
 	    console.log("sending to player " + x.playerName);
 	    socketCommunicator("sendresult", x);
-	})
+	    x.gotresponse = false;
+	});
+	setCurrentcorrectanswer("");
     }
 
     const resetPlayerAnswers = () => {
@@ -203,12 +208,16 @@ export default function page() {
 	    x.gotresponse = false;
 	})
     }
+
+    const setRightLetter = (input: string) => {
+	setCurrentcorrectanswer(input);
+    }
     
     if (gotElements && joinedroom) {
 	return (
 	    <div>
 		<HostBody elements={elements} setState={setQuizState} state={quizState} resetPlayerAnswers={resetPlayerAnswers} sendResultsHandler={socketCommunicator}
-		    currentCorrectAnswer={setCurrentcorrectanswer} sendOffAnswers={sendOffAnswersHandler} /> 
+		    currentCorrectAnswer={setRightLetter} sendOffAnswers={sendOffAnswersHandler} players={playersAndAnswers} />
 		<HootUsers players={playersAndAnswers} />
 	    </div>
 	);

@@ -29,6 +29,7 @@ export default function page() {
     const [score, setScore] = useState<number>(0);
     const [joinedgame, setJoinedgame] = useState<boolean>(false);
     const [isinroom, setIsinroom] = useState<boolean>(false);
+    const [sentAnswer, setSentAnswer] = useState<boolean>(false);
     
     useEffect(() => {
 	const onConnect = () => {
@@ -83,14 +84,17 @@ export default function page() {
     }, []);
 
     const onSendAnswer = (input: string) => {
-	const x: playerAndAnswer  = {
-	    playerName: name,
-	    playerID: socket.id || "",
-	    answer: input,
-	    answercorrect: true,
-	    score: score
-	};
-	socket.emit("playeranswer", x);
+	if (!sentAnswer) {
+	    const x: playerAndAnswer  = {
+		playerName: name,
+		playerID: socket.id || "",
+		answer: input,
+		answercorrect: true,
+		score: score
+	    };
+	    socket.emit("playeranswer", x);
+	    setSentAnswer(true);
+	}
     }
     
     // start, readques, answerques, waitforresult, getresult, getfinalrank
@@ -142,6 +146,9 @@ export default function page() {
     } else if (playerState == "readques") {
 	if (clearedanswer) {
 	    setClearedanswer(false);
+	}
+	if (sentAnswer) {
+	    setSentAnswer(false);
 	}
 	return (
 	    <div>

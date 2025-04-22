@@ -1,0 +1,26 @@
+
+.choicegrid {
+    display: grid;
+    grid-gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.answers {
+    text-align: center;
+    text-color: black;
+}
+
+.answerboxes {
+    padding: 3rem 3rem 3rem 3rem;
+    border-radius: 1rem;
+    margin: 1rem 1rem 1rem 1rem;
+}
+
+.greyback {
+    background-color: lightgrey;
+}
+
+.greenback {
+    background-color: lightgreen;
+}

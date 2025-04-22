@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from '@/app/components/seekhoot/hostbody.module.css';
-import { socket } from "@/socket";
+import Question from '@/app/components/seekhoot/question';
+import Answers from '@/app/components/seekhoot/answers';
+import PlayerRankings from '@/app/components/seekhoot/playerrankings';
 
 interface playerAndAnswer {
     playerName: string,
@@ -28,17 +30,21 @@ interface params {
     currentCorrectAnswer: (arg0: string) => void,
     sendOffAnswers: () => void,
     resetPlayerAnswers: () => void
+    players: playerAndAnswer[]
 }
 
-const HostBody: React.FC<params> = ({ elements, setState, state, sendResultsHandler, currentCorrectAnswer, sendOffAnswers, resetPlayerAnswers }) => {
+type letterchoices = ("a" | "b" | "c" | "d");
+
+const HostBody: React.FC<params> = ({ elements, setState, state, sendResultsHandler, currentCorrectAnswer, sendOffAnswers, resetPlayerAnswers, players}) => {
     const [poppedElement, setPoppedElement] = useState<boolean>(false);
+    const letters:  letterchoices[] = ["a", "b", "c", "d"];
+    const [rightLetter, setRightLetter] = useState<letterchoices | null>(null);
     
     //showplayers, showquestion, allowanswers, showanswer, showrank, showfinalrank
     if (state == "showplayers") {
 	const onclick = () => {
 	    setState("showquestion");
 	    setPoppedElement(false);
-	    currentCorrectAnswer(elements.at(-1)?.correctAnswer || "");
 	    sendResultsHandler("readques", "");
 	    resetPlayerAnswers();
 	}
@@ -53,11 +59,14 @@ const HostBody: React.FC<params> = ({ elements, setState, state, sendResultsHand
 	const onclick = () => {
 	    sendResultsHandler("answerques", "");
 	    setState("allowanswers");
+	    const x = letters[Math.floor(Math.random() * letters.length)];
+	    setRightLetter(x);
+	    currentCorrectAnswer(x);
 	}
 	
 	return (
 	    <div>
-		<div>{currentquestion?.question}</div>
+		<Question inputQuestion={currentquestion?.question || ""} />
 		<button onClick={onclick}>move on...</button>
 	    </div>
 	);
@@ -71,11 +80,9 @@ const HostBody: React.FC<params> = ({ elements, setState, state, sendResultsHand
 	
 	return (
 	    <div>
-		<div>{currentquestion?.question}</div>
-		<div>{currentquestion?.correctAnswer}</div>
-		<div>{currentquestion?.wronganswer1}</div>
-		<div>{currentquestion?.wronganswer2}</div>
-		<div>{currentquestion?.wronganswer3}</div>
+		<Question inputQuestion={currentquestion?.question || ""} />
+		<Answers correctAnswer={currentquestion?.correctAnswer || ""} wronganswer1={currentquestion?.wronganswer1 || ""}
+		    wronganswer3={currentquestion?.wronganswer3 || ""} wronganswer2={currentquestion?.wronganswer2 || ""} rightLetter={rightLetter || null} highlightAnswer={false} />
 		<button onClick={onclick}>show answer...</button>
 	    </div>
 	);
@@ -91,7 +98,9 @@ const HostBody: React.FC<params> = ({ elements, setState, state, sendResultsHand
 
 	return (
 	    <div>
-		<span>the answer was {currentquestion?.correctAnswer}</span>
+		<Question inputQuestion={currentquestion?.question || ""} />
+		<Answers correctAnswer={currentquestion?.correctAnswer || ""} wronganswer1={currentquestion?.wronganswer1 || ""}
+		    wronganswer3={currentquestion?.wronganswer3 || ""} wronganswer2={currentquestion?.wronganswer2 || ""} rightLetter={rightLetter || null} highlightAnswer={true} />
 		<button onClick={onclick}>show the scores</button>
 	    </div>
 	);
@@ -114,6 +123,7 @@ const HostBody: React.FC<params> = ({ elements, setState, state, sendResultsHand
 	return (
 	    <div>
 		<span>here are the scores</span>
+		<PlayerRankings players={players} />
 		<button onClick={onclick}>go to next question</button>
 	    </div>
 	);

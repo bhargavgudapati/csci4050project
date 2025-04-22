@@ -1,0 +1,19 @@
+
+.questionbox {
+    padding: 1rem 1rem;
+    border-radius: 1rem;
+    margin: 1rem 1rem 1rem 1rem;
+    background-color: grey;
+}
+
+.miniheader {
+    text-color: black;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.questiontext {
+    text-color: black;
+    font-size: 2rem;
+    text-align: center;
+}
