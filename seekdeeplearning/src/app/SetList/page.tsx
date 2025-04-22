@@ -71,6 +71,10 @@ export default function SetList() {
     router.push(`/ale-page?setId=${encodeURIComponent(groupTitle)}`);
   };
 
+  const handleStudySet = (groupTitle: string) => {
+    router.push(`/flashcards?topic=${encodeURIComponent(groupTitle)}`);
+  };
+
   const filteredSets = flashcardSets.filter((set) =>
     set.groupTitle.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -83,11 +87,11 @@ export default function SetList() {
           <div className="main">
             <div className="flex items-center justify-between mb-6">
               <h1 className="header-title">Your Topics</h1>
-              <button
-                onClick={() => setTitleInputVisible(true)}
-                className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff]"
-              >
-                ➕ Create New Set
+                <button
+                  onClick={() => router.push('/flashcardsEdit')}
+                  className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff]"
+                >
+                  ➕ Create New Set
               </button>
             </div>
 
@@ -104,24 +108,6 @@ export default function SetList() {
               </div>
             </div>
 
-            {titleInputVisible && (
-              <div className="mb-6 flex items-center gap-3">
-                <input
-                  type="text"
-                  placeholder="Enter new set title"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="border px-4 py-2 rounded w-full"
-                />
-                <button
-                  onClick={handleCreateSet}
-                  className="bg-green-500 text-white px-4 py-2 rounded"
-                >
-                  Add
-                </button>
-              </div>
-            )}
-
             <div className="grid gap-4">
               {filteredSets.map((set) => (
                 <div key={set.groupTitle} className="p-4 border rounded-lg shadow bg-white">
@@ -131,9 +117,15 @@ export default function SetList() {
                     Last Studied: {formatLastStudied(new Date(set.lastStudied))}
                   </p>
                   <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => handleStudySet(set.groupTitle)}
+                    className="bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
+                  >
+                    Study Set
+                  </button>
                     <button
                       onClick={() => handleTakeQuiz(set.groupTitle)}
-                      className="bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
+                      className="ml-2 bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
                     >
                       Take Quiz
                     </button>
