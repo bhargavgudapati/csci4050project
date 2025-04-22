@@ -33,7 +33,7 @@ export default function SetList() {
   const [titleInputVisible, setTitleInputVisible] = useState(false);
   const [newTitle, setNewTitle] = useState('');
 
-  useEffect(() => {
+    useEffect(() => {
     fetch('/api/flashcardSet')
       .then((res) => res.json())
       .then((data) => {
@@ -75,8 +75,28 @@ export default function SetList() {
     router.push(`/flashcards?topic=${encodeURIComponent(groupTitle)}`);
   };
 
+    const handleGenerateSeekhoot = async (groupTitle: string) => {
+	const newRoomNumber = Math.floor(Math.random() * 999999);
+	const newsh = {
+	    roomNumber: newRoomNumber,
+	    groupTitle: groupTitle
+	    
+	}
+	const res = await fetch('/api/shinstance', {
+	    method: 'POST',
+	    headers: {
+		'Content-Type': 'application/json',
+	    },
+	    body: JSON.stringify(newsh),
+	});
+	const tojson = res.json().then(() => {
+	    console.log("the result is " + tojson);
+	    router.push("/seekhoot/sh-host/" + newRoomNumber)
+	});
+    }
+
   const filteredSets = flashcardSets.filter((set) =>
-    set.groupTitle.toLowerCase().includes(searchTerm.toLowerCase())
+      set.groupTitle.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -114,21 +134,25 @@ export default function SetList() {
                   <h2 className="text-lg font-semibold">{set.groupTitle}</h2>
                   <p className="text-sm text-gray-600">Terms: {set.count}</p>
                   <p className="text-xs text-gray-400 italic">
-                    Last Studied: {formatLastStudied(new Date(set.lastStudied))}
+                    Last Studied: {formatLastStudied(new Date())}
                   </p>
                   <div className="mt-4 flex justify-end">
                   <button
                     onClick={() => handleStudySet(set.groupTitle)}
-                    className="bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
+                      className="bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
                   >
                     Study Set
                   </button>
                     <button
                       onClick={() => handleTakeQuiz(set.groupTitle)}
-                      className="ml-2 bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
+                      className="ml-2 mr-2 bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm"
                     >
                       Take Quiz
                     </button>
+		      <button onClick={() => handleGenerateSeekhoot(set.groupTitle)}
+			  className="bg-[#D4DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#c3d2ff] text-sm">
+			  Host SeekHoot
+		      </button>
                   </div>
                 </div>
               ))}

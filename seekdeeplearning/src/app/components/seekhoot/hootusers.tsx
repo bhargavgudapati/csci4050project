@@ -12,12 +12,14 @@ interface playerAndAnswer {
 }
 
 interface params {
-    players: playerAndAnswer[]
+    players: playerAndAnswer[],
+    roomcode: string
 }
 
-const HootUsers: React.FC<params> = ({ players }) => {
+const HootUsers: React.FC<params> = ({ players, roomcode }) => {
     return (
 	<div className={styles.hootusers}>
+	    <p className={styles.miniheader}>room number: {roomcode}</p>
 	    <p className={styles.miniheader}><b>current players...</b></p>
 	    <div className={styles.userlist}>
 		{players.map((x, index) => {

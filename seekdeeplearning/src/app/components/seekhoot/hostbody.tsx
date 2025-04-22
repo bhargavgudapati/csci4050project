@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 import styles from '@/app/components/seekhoot/hostbody.module.css';
 import Question from '@/app/components/seekhoot/question';
 import Answers from '@/app/components/seekhoot/answers';
@@ -32,11 +33,13 @@ interface params {
     sendOffAnswers: () => void,
     resetPlayerAnswers: () => void
     players: playerAndAnswer[],
-    rightLetter: letterchoices
+    rightLetter: letterchoices,
+    roomcode: string
 }
 
-const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHandler, sendOffAnswers, resetPlayerAnswers, players, rightLetter }) => {
+const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHandler, sendOffAnswers, resetPlayerAnswers, players, rightLetter, roomcode }) => {
     const [poppedElement, setPoppedElement] = useState<boolean>(false);
+    const router = useRouter();
     
     //showplayers, showquestion, allowanswers, showanswer, showrank, showfinalrank
     if (state == "showplayers") {
@@ -47,8 +50,8 @@ const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHand
 	    resetPlayerAnswers();
 	}
 	return (
-	    <div>
-		<button onClick={onclick}>go to first question...</button>
+	    <div className={styles.buttonbox}>
+		<button className={styles.joinbutton} onClick={onclick}>go to first question...</button>
 	    </div>
 	);
     } else if (state == "showquestion") {
@@ -62,7 +65,7 @@ const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHand
 	return (
 	    <div>
 		<Question inputQuestion={currentquestion?.question || ""} />
-		<button onClick={onclick}>move on...</button>
+		<div className={styles.buttonbox}><button className={styles.joinbutton} onClick={onclick}>move on...</button></div>
 	    </div>
 	);
     } else if (state == "allowanswers") {
@@ -78,7 +81,7 @@ const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHand
 		<Question inputQuestion={currentquestion?.question || ""} />
 		<Answers correctAnswer={currentquestion?.correctAnswer || ""} wronganswer1={currentquestion?.wronganswer1 || ""}
 		    wronganswer3={currentquestion?.wronganswer3 || ""} wronganswer2={currentquestion?.wronganswer2 || ""} rightLetter={rightLetter} highlightAnswer={false} />
-		<button onClick={onclick}>show answer...</button>
+		<div className={styles.buttonbox}><button className={styles.joinbutton} onClick={onclick}>show answer...</button></div>
 	    </div>
 	);
     } else if (state == "showanswer") {
@@ -97,7 +100,7 @@ const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHand
 		<Answers correctAnswer={currentquestion?.correctAnswer || ""} wronganswer1={currentquestion?.wronganswer1 || ""}
 		    wronganswer3={currentquestion?.wronganswer3 || ""} wronganswer2={currentquestion?.wronganswer2 || ""} rightLetter={rightLetter == "a" ? "a" :
 			(rightLetter == "b" ? "b" : (rightLetter == "c" ? "c" : (rightLetter == "d" ? "d" : null)))} highlightAnswer={true} />
-		<button onClick={onclick}>show the scores</button>
+		<div className={styles.buttonbox}><button className={styles.joinbutton} onClick={onclick}>show the scores</button></div>
 	    </div>
 	);
     } else if (state == "showrank") {
@@ -119,13 +122,25 @@ const HostBody: React.FC<params> = ({ elements, setPoint, state, sendResultsHand
 	return (
 	    <div>
 		<PlayerRankings players={players} />
-		<button onClick={onclick}>go to next question</button>
+		<div className={styles.buttonbox}><button className={styles.joinbutton} onClick={onclick}>go to next question</button></div>
 	    </div>
 	);
     } else if (state == "getfinalrank") {
+
+	const onClick = async () => {
+	    router.push("/SetList");
+	    const response = await fetch("/api/shinstance/" + roomcode, {
+		method: "DELETE",
+		headers: {
+		    'Content-Type': 'application/json'
+		}
+	    });
+	}
+	
 	return (
 	    <div>
-		<span>the quiz is done</span>
+		<div className={styles.buttonbox}><button className={styles.joinbutton} onClick={onClick}>leave seekhoot</button></div>
+		<PlayerRankings players={players} />
 	    </div>
 	);
     } else {

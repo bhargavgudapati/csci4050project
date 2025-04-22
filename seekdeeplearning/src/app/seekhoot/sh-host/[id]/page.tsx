@@ -223,8 +223,8 @@ export default function page() {
 		<NavBar />
 		<main className={"ml-16 p-6"}>
 		    <HostBody elements={elements} setPoint={setQuizState} state={quizState} resetPlayerAnswers={resetPlayerAnswers} sendResultsHandler={socketCommunicator}
-			sendOffAnswers={sendOffAnswersHandler} players={playersAndAnswers} rightLetter={currentcorrectanswer} />
-		    <HootUsers players={playersAndAnswers} />
+			sendOffAnswers={sendOffAnswersHandler} players={playersAndAnswers} rightLetter={currentcorrectanswer} roomcode={id?.toString() || ""}/>
+		    <HootUsers players={playersAndAnswers} roomcode={id.toString()}/>
 		</main>
 	    </div>
 	);

@@ -7,16 +7,16 @@
 .button27 {
     flex: 50%;
     appearance: none;
-    background-color: #000000;
+    background-color: lightgrey;
     border: 2px solid #1A1A1A;
     border-radius: 15px;
-    color: #FFFFFF;
+    color: black;
     cursor: pointer;
     font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
     font-size: 16px;
     font-weight: 600;
     line-height: normal;
-    margin: 0;
+    margin: 1rem 1rem 1rem 1rem;
     min-height: 60px;
     min-width: 0;
     outline: none;
