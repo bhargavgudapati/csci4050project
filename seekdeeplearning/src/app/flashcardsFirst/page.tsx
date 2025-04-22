@@ -52,7 +52,7 @@ export default function FlashcardsFirstPage() {
                 onClick={() => {
                   const trimmed = tempTitle.trim();
                   if (trimmed) {
-                    router.push(`/flashcards?topic=${encodeURIComponent(trimmed)}`);
+                    router.push(`/flashcardsEdit?topic=${encodeURIComponent(trimmed)}`);
                   }
                 }}
                 className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff] disabled:opacity-50"
