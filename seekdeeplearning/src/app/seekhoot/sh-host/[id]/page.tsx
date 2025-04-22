@@ -149,7 +149,7 @@ export default function page() {
 	socket.on("newplayer", (input: playerAndAnswer) => {
 	    let addplayer: boolean = true;
 	    playersAndAnswers.forEach((x) => {
-		if (input.playerID == x.playerID) {
+		if (input.playerID == x.playerID || input.playerName == x.playerName) {
 		    addplayer = false;
 		}
 	    });
@@ -167,6 +167,7 @@ export default function page() {
 		});
 		console.log("added player " + input.playerName);
 		console.log("their id:" + input.playerID);
+		addplayer = false;
 	    }
 	});
 
