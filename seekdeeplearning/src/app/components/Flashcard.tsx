@@ -8,11 +8,22 @@ interface FlashcardProps {
 
 const Flashcard: React.FC<FlashcardProps> = ({ term, definition, focused }) => {
   const [flipped, setFlipped] = useState(false); // State to handle the flip
+  const [showDefinition, setShowDefinition] = useState(false); // State to control when to show the definition
 
   const handleClick = () => {
     if (focused) {
-      setFlipped(!flipped); // Toggle flip only if the card is focused
+      setFlipped(true); // Start the flip animation
+      setTimeout(() => {
+        setShowDefinition(true); // Show the definition after the animation completes
+      }, 200); // Match the duration of the flip animation (500ms in this case)
     }
+  };
+
+  const handleReset = () => {
+    setFlipped(false); // Reset the flip animation
+    setTimeout(() => {
+      setShowDefinition(false); // Show the definition after the animation completes
+    }, 200); // Reset to show the term
   };
 
   return (
@@ -20,7 +31,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ term, definition, focused }) => {
       className={`relative mx-auto p-6 rounded-2xl shadow-md transition-transform ${
         focused ? "scale-110 w-[400px] h-[250px]" : "w-[300px] h-[200px]"
       }`}
-      onClick={handleClick}
+      onClick={flipped ? handleReset : handleClick} // Toggle between flip and reset
       style={{ perspective: "1000px" }} // Set perspective for the 3D effect
     >
       {/* Container for the flip effect */}
@@ -37,8 +48,11 @@ const Flashcard: React.FC<FlashcardProps> = ({ term, definition, focused }) => {
           className={`absolute w-full h-full bg-[#F5F5F5] rounded-2xl flex items-center justify-center text-center ${
             flipped && focused ? "hidden" : ""
           }`}
+          style={{
+            transform: showDefinition ? "rotateX(180deg)" : "",
+          }}
         >
-          <h2 className="text-black text-2xl font-medium">{term}</h2>
+          <h2 className={!showDefinition ? "text-black text-2xl font-medium" : "text-black text-sm px-4"}>{!showDefinition ? term : definition}</h2>
         </div>
 
         {/* Back Side (Definition) */}
@@ -47,10 +61,12 @@ const Flashcard: React.FC<FlashcardProps> = ({ term, definition, focused }) => {
             flipped && focused ? "" : "hidden"
           }`}
           style={{
-            transform: flipped && focused ? "rotateX(180deg)" : "",
+            transform: showDefinition ? "rotateX(180deg)" : "",
           }}
         >
-          <p className="text-black text-sm px-4">{definition}</p>
+          <p className={showDefinition ? "text-black text-sm px-4" : "text-black text-2xl font-medium"}>
+            {showDefinition ? definition : term}
+          </p>
         </div>
       </div>
     </div>
