@@ -1,57 +1,76 @@
-
-.wholeform {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 20rem;
-}
-
-.entryWindow {
+.container {
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.errorText {
+    background-color: #594EEC; 
+  }
+  
+  .card {
+    background-color: #E0E4F5;
+    border-radius: 1.5rem;
+    padding: 3rem;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
     text-align: center;
-}
-
-.blackError {
-    color: black;
-}
-
-.redError {
-    color: darkred;
-}
-
-.joinbox {
-    background-color: lightgrey;
-    box-shadow: 10px 10px 5px grey;
-    display: inline-block;
-    border-width: 10px 10px;
-    border-color: lightgrey;
-    border-radius: 5px;
-}
-
-.prompt {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.joinbutton {
-    background-color: lightgrey;
-    text-color: black;
-    padding: 0.75rem 1.5rem;
+    width: 90%;
+    max-width: 500px;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+  
+  .title span {
+    color: #594EEC;
+    font-weight: 800;
+  }
+  
+  .formRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .joininput {
+    padding: 0.75rem 1.25rem;
     border-radius: 1rem;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.joinbutton:hover {
-    background-color: grey;
-}
-
-.joininput {
+    border: none;
+    font-size: 1rem;
+    width: 60%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fafafa;
+  }
+  
+  .joinbutton {
     padding: 0.75rem 1.5rem;
-    margin-right: 10px;
-}
+    background-color: #D4DCFF;
+    border: none;
+    border-radius: 1rem;
+    font-weight: 600;
+    color: black;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s ease;
+  }
+  
+  .joinbutton:hover {
+    background-color: #c3d2ff;
+  }
+  
+  .errorText {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .blackError {
+    color: black;
+  }
+  
+  .redError {
+    color: darkred;
+  }
+  
