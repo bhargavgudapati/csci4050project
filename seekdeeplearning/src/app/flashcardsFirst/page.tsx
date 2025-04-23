@@ -12,57 +12,59 @@ export default function FlashcardsFirstPage() {
   return (
     <>
       <NavBar />
-      <main className="ml-16 p-6 h-screen">
-        <div className="p-6 space-y-6 h-full">
-          {!titleInputVisible && (
-            <div className="text-center space-y-6">
-              <h1 className="text-3xl font-semibold">What would you like to do?</h1>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setTitleInputVisible(true)}
-                  className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff]"
-                >
-                  ➕ Create New Flashcard Set
-                </button>
-                <button
-                  onClick={() => router.push('/SetList')}
-                  className="bg-[#E0E4F5] text-black px-6 py-3 rounded-full shadow hover:bg-[#d0d6e6]"
-                >
-                  📂 View Existing Sets
-                </button>
-              </div>
+      <main className="ml-16 h-screen flex items-center justify-center p-6">
+        {!titleInputVisible ? (
+          <div className="flex w-full max-w-6xl justify-between items-center space-x-10">
+            {/* Left Side - Greeting Text */}
+            <div className="flex-1 text-left space-y-4">
+              <h1 className="text-4xl font-extrabold">Hi there! Let’s get started!</h1>
+              <p className="text-2xl font-semibold">Select an option!</p>
             </div>
-          )}
 
-          {titleInputVisible && (
-            <div className="flex flex-col items-center justify-center h-full space-y-4">
-              <h1 className="text-4xl font-semibold text-center">Name Your New Set</h1>
-              <input
-                type="text"
-                value={tempTitle}
-                onChange={(e) => {
-                  if (e.target.value.length <= 50) {
-                    setTempTitle(e.target.value);
-                  }
-                }}
-                className="p-2 border rounded w-full max-w-md text-center"
-                placeholder="Enter set title (max 50 characters)"
-              />
+            {/* Right Side - Buttons */}
+            <div className="flex flex-col space-y-4 w-80">
               <button
-                onClick={() => {
-                  const trimmed = tempTitle.trim();
-                  if (trimmed) {
-                    router.push(`/flashcardsEdit?topic=${encodeURIComponent(trimmed)}`);
-                  }
-                }}
-                className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff] disabled:opacity-50"
-                disabled={!tempTitle.trim()}
+                onClick={() => setTitleInputVisible(true)}
+                className="bg-[#D4DCFF] text-black px-6 py-3 rounded-2xl shadow hover:bg-[#c3d2ff] font-medium w-full"
               >
-                Save Title
+                Create New Flashcard Set
+              </button>
+              <button
+                onClick={() => router.push('/SetList')}
+                className="bg-[#D4DCFF] text-black px-6 py-3 rounded-2xl shadow hover:bg-[#c3d2ff] font-medium w-full"
+              >
+                Select From Existing Sets
               </button>
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center w-full h-full space-y-6 max-w-lg mx-auto">
+            <h1 className="text-4xl font-semibold text-center">Name Your New Set</h1>
+            <input
+              type="text"
+              value={tempTitle}
+              onChange={(e) => {
+                if (e.target.value.length <= 50) {
+                  setTempTitle(e.target.value);
+                }
+              }}
+              className="p-3 border rounded-xl w-full text-center text-lg"
+              placeholder="Enter set title (max 50 characters)"
+            />
+            <button
+              onClick={() => {
+                const trimmed = tempTitle.trim();
+                if (trimmed) {
+                  router.push(`/flashcardsEdit?topic=${encodeURIComponent(trimmed)}`);
+                }
+              }}
+              className="bg-[#D4DCFF] text-black px-6 py-3 rounded-2xl shadow hover:bg-[#c3d2ff] disabled:opacity-50 font-medium"
+              disabled={!tempTitle.trim()}
+            >
+              Save Title
+            </button>
+          </div>
+        )}
       </main>
     </>
   );
