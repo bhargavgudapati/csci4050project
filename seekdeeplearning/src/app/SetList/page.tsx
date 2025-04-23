@@ -108,7 +108,7 @@ export default function SetList() {
             <div className="flex items-center justify-between mb-6">
               <h1 className="header-title">Your Topics</h1>
                 <button
-                  onClick={() => router.push('/flashcardsEdit')}
+                  onClick={() => router.push('/flashcardsFirst')}
                   className="bg-[#D4DCFF] text-black px-6 py-3 rounded-full shadow hover:bg-[#c3d2ff]"
                 >
                   ➕ Create New Set

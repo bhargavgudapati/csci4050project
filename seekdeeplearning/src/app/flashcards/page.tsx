@@ -49,15 +49,16 @@ export default function FlashcardsStudyPage() {
       <main className="ml-16 p-6 space-y-6">
         {topic ? (
           <>
-            <h1 className="text-3xl text-center text-black">{topic}</h1>
+            <h1 className="text-3xl text-center text-black mt-12">{topic}</h1>
+            
             {flashcards.length > 0 ? (
               <>
                 <div className="relative flex items-center justify-center mt-8">
                   <button 
                     onClick={handlePrev} 
-                    className="absolute left-4 bg-[#E0E4F5] rounded-full p-3 shadow"
+                    className="absolute left-100 bg-[#E0E4F5] hover:bg-[#D4DCFF] w-14 h-14 rounded-full shadow flex items-center justify-center text-3xl font-bold text-[#859AD4] transition-colors duration-200"
                   >
-                    ←
+                    &lt;
                   </button>
                   <Flashcard
                     term={flashcards[currentIndex].term}
@@ -66,14 +67,14 @@ export default function FlashcardsStudyPage() {
                   />
                   <button 
                     onClick={handleNext} 
-                    className="absolute right-4 bg-[#E0E4F5] rounded-full p-3 shadow"
+                    className="absolute right-100 bg-[#E0E4F5] hover:bg-[#D4DCFF] w-14 h-14 rounded-full shadow flex items-center justify-center text-3xl font-bold text-[#859AD4] transition-colors duration-200"
                   >
-                    →
+                    &gt;
                   </button>
                 </div>
 
                 {/* Flashcard list below current card */}
-                <div className="bg-[#E0E4F5] rounded-xl p-4 mt-8">
+                <div className="bg-[#E0E4F5] rounded-xl p-4 mt-12">
                   <h2 className="text-lg text-black mb-4">Flashcards ({flashcards.length})</h2>
                   <div className="space-y-4">
                     {flashcards.map((card, i) => (

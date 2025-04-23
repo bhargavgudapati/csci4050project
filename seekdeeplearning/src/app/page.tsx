@@ -35,19 +35,19 @@ const HomePage = () => {
         {/* Right Section */}
         <div className="flex flex-col justify-center items-center w-1/2 gap-10">
           <button
-            className="bg-[#E0E4F5] text-black text-2xl font-semibold px-14 py-6 rounded-2xl shadow hover:bg-[#d7dced] transition"
+            className="bg-[#E0E4F5] text-black text-2xl font-semibold px-14 py-6 rounded-2xl shadow hover:bg-[#c3d2ff] transition"
             onClick={() => router.push('/flashcardsFirst')}
           >
             Flashcards
           </button>
           <button
-            className="bg-[#E0E4F5] text-black text-2xl font-semibold px-14 py-6 rounded-2xl shadow hover:bg-[#d7dced] transition"
+            className="bg-[#E0E4F5] text-black text-2xl font-semibold px-14 py-6 rounded-2xl shadow hover:bg-[#c3d2ff] transition"
             onClick={() => router.push('/seekhoot/sh-player')}
           >
             SeekHoot
           </button>
           <button
-            className="bg-[#E0E4F5] text-black text-2xl font-semibold px-14 py-6 rounded-2xl shadow hover:bg-[#d7dced] transition"
+            className="bg-[#E0E4F5] text-black text-2xl font-semibold px-14 py-6 rounded-2xl shadow hover:bg-[#c3d2ff] transition"
             onClick={() => router.push('/SetList')}
           >
             Study Sets
