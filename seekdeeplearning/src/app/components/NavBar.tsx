@@ -8,7 +8,6 @@ const navItems = [
     { href: '/', icon: <MdHome size={24} />, label: 'Home' },
     { href: '/SetList', icon: <MdLibraryBooks size={24} />, label: 'Your Library' },
     { href: '/flashcardsFirst', icon: <MdStyle size={24} />, label: 'Flashcards' },
-    { href: '/ale-page', icon: <MdQuiz size={24} />, label: 'Quiz' },
     { href: '/seekhoot/sh-player', icon: <MdPeople size={24} />, label: 'Join Seekhoot'}
 ];
 

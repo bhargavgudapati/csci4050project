@@ -165,13 +165,23 @@ export default function FlashcardsPage() {
 
               {flashcards.length > 0 && (
                 <div className="relative flex items-center justify-center">
-                  <button className="absolute left-4 bg-[#E0E4F5] rounded-full p-3 shadow" onClick={handlePrev}>←</button>
+                  <button 
+                    onClick={handlePrev} 
+                    className="absolute left-100 bg-[#E0E4F5] hover:bg-[#D4DCFF] w-14 h-14 rounded-full shadow flex items-center justify-center text-3xl font-bold text-[#859AD4] transition-colors duration-200"
+                  >
+                    &lt;
+                  </button>
                   <Flashcard
                     term={flashcards[currentIndex].term}
                     definition={flashcards[currentIndex].definition}
                     focused
                   />
-                  <button className="absolute right-4 bg-[#E0E4F5] rounded-full p-3 shadow" onClick={handleNext}>→</button>
+                  <button 
+                    onClick={handleNext} 
+                    className="absolute right-100 bg-[#E0E4F5] hover:bg-[#D4DCFF] w-14 h-14 rounded-full shadow flex items-center justify-center text-3xl font-bold text-[#859AD4] transition-colors duration-200"
+                  >
+                    &gt;
+                  </button>
                 </div>
               )}
 
