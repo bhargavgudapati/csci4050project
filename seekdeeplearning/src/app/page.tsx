@@ -26,7 +26,10 @@ const HomePage = () => {
               ))}
             </span>
           </h1>
-          <div className="w-20 h-20 bg-[#5D52E9] rounded-full mt-4"></div>
+
+          <div className="mt-4">
+            <img src="./Dolphin.png" alt="Dolphin" className="w-40 h-auto" />
+          </div>
 
           {/* Vertical Purple Bar */}
           <div className="absolute top-0 right-0 h-full w-4 bg-[#5D52E9]" />
